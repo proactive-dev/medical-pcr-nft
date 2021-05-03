@@ -1,0 +1,64 @@
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Drawer, Layout } from 'antd'
+import SidebarContent from './SidebarContent'
+import { toggleCollapsedSideNav, updateWindowWidth } from '../../appRedux/actions/Setting'
+import {
+  NAV_STYLE_DRAWER,
+  NAV_STYLE_FIXED,
+  NAV_STYLE_MINI_SIDEBAR,
+  TAB_SIZE,
+  THEME_TYPE_LITE
+} from '../../constants/ThemeSetting'
+
+const {Sider} = Layout
+
+const Sidebar = () => {
+  const dispatch = useDispatch()
+  const settings = useSelector(state => state.settings)
+  const {themeType, navCollapsed, width, navStyle} = settings
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      dispatch(updateWindowWidth(window.innerWidth))
+    })
+  }, [])
+
+  let drawerStyle = 'gx-collapsed-sidebar'
+
+  if (navStyle === NAV_STYLE_FIXED) {
+    drawerStyle = ''
+  } else if (navStyle === NAV_STYLE_MINI_SIDEBAR) {
+    drawerStyle = 'gx-mini-sidebar'
+  } else if (navStyle === NAV_STYLE_DRAWER) {
+    drawerStyle = 'gx-collapsed-sidebar'
+  }
+  if ((navStyle === NAV_STYLE_FIXED || navStyle === NAV_STYLE_MINI_SIDEBAR) && width < TAB_SIZE) {
+    drawerStyle = 'gx-collapsed-sidebar'
+  }
+
+  return (
+    <Sider
+      className={`gx-app-sidebar ${drawerStyle} ${themeType !== THEME_TYPE_LITE ? 'gx-layout-sider-dark' : null}`}
+      trigger={null}
+      collapsed={(width < TAB_SIZE ? false : navStyle === NAV_STYLE_MINI_SIDEBAR)}
+      theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
+      collapsible>
+      {
+        navStyle === NAV_STYLE_DRAWER || width < TAB_SIZE ?
+          <Drawer
+            className={`gx-drawer-sidebar ${themeType !== THEME_TYPE_LITE ? 'gx-drawer-sidebar-dark' : null}`}
+            placement="left"
+            closable={false}
+            onClose={() => dispatch(toggleCollapsedSideNav(!navCollapsed))}
+            visible={navCollapsed}>
+            <SidebarContent/>
+          </Drawer>
+          :
+          <SidebarContent/>
+      }
+    </Sider>
+  )
+}
+
+export default Sidebar
