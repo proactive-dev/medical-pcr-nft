@@ -13,25 +13,37 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     enum TestResult {Negative, Positive}
 
     struct Person {
-        string name;
-        string birth;
+        bytes32 name;
+        bytes32 birth;
         Gender gender;
-        string residence;
-        string phone;
-        string mail;
+        bytes32 residence;
+        bytes32 phone;
+        bytes32 mail;
     }
 
     struct Organization {
-        string name;
-        string representative;
-        string streetAddress;
-        string phone;
-        string mail;
+        bytes32 name;
+        bytes32 representative;
+        bytes32 streetAddress;
+        bytes32 phone;
+        bytes32 mail;
+    }
+
+    struct TestRequest {
+        address account;
+        bytes32 name;
+        bytes32 birth;
+        Gender gender;
+        bytes32 residence;
+        bytes32 phone;
+        bytes32 mail;
+        uint256 requestedAt;
+        uint256 issuedAt;
     }
 
     struct Certificate {
-        string name;
-        string description;
+        bytes32 name;
+        bytes32 description;
         string fileHash;
         string imageHash;
         uint256 sampledAt;
@@ -43,11 +55,15 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     mapping(address => Organization) public organizations;
     address[] organizationAccounts;
 
+    mapping (uint256 => TestRequest) public testRequests;
+    Counters.Counter private _testIdTracker;
+
     mapping (uint256 => Certificate) public certificates;
     Counters.Counter private _tokenIdTracker;
 
-    event SetPerson(address who, string name, string birth, Gender gender, string residence, string phone, string mail);
-    event SetOrganization(address who, string name, string representative, string streetAddress, string phone, string mail);
+    event SetPerson(address who, bytes32 name, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail);
+    event SetOrganization(address who, bytes32 name, bytes32 representative, bytes32 streetAddress, bytes32 phone, bytes32 mail);
+    event NewTestRequest(uint256 id, address who, bytes32 name, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail, uint256 requestedAt);
 
     constructor()
     	ERC721PresetMinterPauserAutoId(
@@ -57,7 +73,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         )
     {}
 
-    function setPerson(string memory _name, string memory _birth, Gender _gender, string memory _residence, string memory _phone, string memory _mail) public {
+    function setPerson(bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
         people[msg.sender].name = _name;
         people[msg.sender].birth = _birth;
         people[msg.sender].gender = _gender;
@@ -68,10 +84,10 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         emit SetPerson(msg.sender, _name, _birth, _gender, _residence, _phone, _mail);
     }
 
-    function setOrganization(address _who, string memory _name, string memory _representative, string memory _streetAddress, string memory _phone, string memory _mail) public {
+    function setOrganization(address _who, bytes32 _name, bytes32 _representative, bytes32 _streetAddress, bytes32 _phone, bytes32 _mail) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can set organization data.");
 
-        if (bytes(organizations[_who].name).length == 0 ) {
+        if (organizations[_who].name == "" ) {
             organizationAccounts.push(_who);
         }
 
@@ -116,7 +132,43 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (isAdmin, isIssuer);
     }
 
-    function mint(address _who, string memory _name, string memory _description, string memory _fileHash, string memory _imageHash) public {
+    function newTestRequest(address _who, bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
+        uint256 _id = _testIdTracker.current();
+
+        testRequests[_id].account = _who;
+        testRequests[_id].name = _name;
+        testRequests[_id].birth = _birth;
+        testRequests[_id].gender = _gender;
+        testRequests[_id].residence = _residence;
+        testRequests[_id].phone = _phone;
+        testRequests[_id].mail = _mail;
+        testRequests[_id].requestedAt = block.timestamp;
+        testRequests[_id].issuedAt = 0;
+
+        _testIdTracker.increment();
+        emit NewTestRequest(_id, _who, _name, _birth, _gender, _residence, _phone, _mail, block.timestamp);
+    }
+
+    function getTestRequest(uint256 _id) public view returns (TestRequest memory) {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Only owner or organization can access test request data.");
+
+        return testRequests[_id];
+    }
+
+    function getTestRequests() public view returns (uint256[] memory, TestRequest[] memory) {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Only owner or organization can access test request data.");
+
+        uint256 _requestCount = _testIdTracker.current();
+        uint256[] memory _ids = new uint256[](_requestCount);
+        TestRequest[] memory _requests = new TestRequest[](_requestCount);
+        for (uint i = 0; i < _requestCount; i++) {
+            _ids[i] = i;
+            _requests[i] = testRequests[i];
+        }
+        return (_ids, _requests);
+    }
+
+    function mint(address _who, bytes32 _name, bytes32 _description, string memory _fileHash, string memory _imageHash) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Owner or issuer can mint certificates.");
 
         uint256 _id = _tokenIdTracker.current();

@@ -3,6 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
+import { ethers } from 'ethers'
 import _ from 'lodash'
 import QRCode from 'qrcode.react'
 import { EditFilled, QrcodeOutlined } from '@ant-design/icons'
@@ -35,12 +36,12 @@ const UserView = (props) => {
         window.history.back()
       } else {
         setInfo({
-          name: result['name'],
-          residence: result['residence'],
-          birthDate: result['birth'],
+          name: ethers.utils.parseBytes32String(result['name']),
+          residence: ethers.utils.parseBytes32String(result['residence']),
+          birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
-          phoneNumber: result['phone'],
-          email: result['mail']
+          phoneNumber: ethers.utils.parseBytes32String(result['phone']),
+          email: ethers.utils.parseBytes32String(result['mail'])
         })
       }
     }).catch((error) => {

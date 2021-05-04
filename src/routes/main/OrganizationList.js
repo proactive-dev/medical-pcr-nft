@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { List, Spin } from 'antd'
+import { ethers } from 'ethers'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { ERROR, TYPE_ORGANIZATION, VIEW } from '../../constants/AppConfigs'
@@ -27,11 +28,11 @@ const OrganizationList = (props) => {
       result[0].forEach((account, index) => {
         _organizations.push({
           account: account,
-          name: result[1][index]['name'],
-          streetAddress: result[1][index]['streetAddress'],
-          phone: result[1][index]['phone'],
-          mail: result[1][index]['mail'],
-          representative: result[1][index]['representative']
+          name: ethers.utils.parseBytes32String(result[1][index]['name']),
+          streetAddress: ethers.utils.parseBytes32String(result[1][index]['streetAddress']),
+          phone: ethers.utils.parseBytes32String(result[1][index]['phone']),
+          mail: ethers.utils.parseBytes32String(result[1][index]['mail']),
+          representative: ethers.utils.parseBytes32String(result[1][index]['representative'])
         })
       })
       setOrganizations(_organizations)

@@ -3,6 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
+import { ethers } from 'ethers'
 import _ from 'lodash'
 import { EditFilled } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
@@ -38,11 +39,11 @@ const OrganizationView = (props) => {
       } else {
         setInfo({
           account,
-          name: result['name'],
-          delegateName: result['representative'],
-          residence: result['streetAddress'],
-          phoneNumber: result['phone'],
-          email: result['mail']
+          name: ethers.utils.parseBytes32String(result['name']),
+          delegateName: ethers.utils.parseBytes32String(result['representative']),
+          residence: ethers.utils.parseBytes32String(result['streetAddress']),
+          phoneNumber: ethers.utils.parseBytes32String(result['phone']),
+          email: ethers.utils.parseBytes32String(result['mail'])
         })
       }
     }).catch((error) => {

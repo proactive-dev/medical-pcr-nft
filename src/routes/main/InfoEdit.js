@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { injectIntl } from 'react-intl'
 import { DatePicker, Form, Input, Select, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
+import { ethers } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
@@ -36,12 +37,18 @@ const InfoEdit = (props) => {
 
   const saveUser = async (values) => {
     dispatch(showLoader())
-    contract.setPerson(values.name, values.birthDate.format(dateFormat), values.gender, values.residence, values.phoneNumber, values.email)
-      .then((result) => {
-        dispatch(hideLoader())
-        openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.user'}))
-        history.push('/')
-      }).catch((error) => {
+    contract.setPerson(
+      ethers.utils.formatBytes32String(values.name),
+      ethers.utils.formatBytes32String(values.birthDate.format(dateFormat)),
+      values.gender,
+      ethers.utils.formatBytes32String(values.residence),
+      ethers.utils.formatBytes32String(values.phoneNumber),
+      ethers.utils.formatBytes32String(values.email)
+    ).then((result) => {
+      dispatch(hideLoader())
+      openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.user'}))
+      history.push('/')
+    }).catch((error) => {
       dispatch(hideLoader())
       openNotificationWithIcon(ERROR, error.message)
     })
@@ -49,12 +56,18 @@ const InfoEdit = (props) => {
 
   const saveOrganization = (values) => {
     dispatch(showLoader())
-    contract.setOrganization(values.account, values.name, values.delegateName, values.residence, values.phoneNumber, values.email)
-      .then((result) => {
-        dispatch(hideLoader())
-        openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.organization'}))
-        history.push('/')
-      }).catch((error) => {
+    contract.setOrganization(
+      values.account,
+      ethers.utils.formatBytes32String(values.name),
+      ethers.utils.formatBytes32String(values.delegateName),
+      ethers.utils.formatBytes32String(values.residence),
+      ethers.utils.formatBytes32String(values.phoneNumber),
+      ethers.utils.formatBytes32String(values.email)
+    ).then((result) => {
+      dispatch(hideLoader())
+      openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.organization'}))
+      history.push('/')
+    }).catch((error) => {
       dispatch(hideLoader())
       openNotificationWithIcon(ERROR, error.message)
     })
