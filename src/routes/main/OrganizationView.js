@@ -26,6 +26,8 @@ const OrganizationView = (props) => {
     if (!_.isEmpty(account) && !_.isUndefined(account)) {
       setAccount(account)
       fetchData(account)
+    } else {
+      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.invalidAddress'}))
     }
   }, [])
 
@@ -37,14 +39,20 @@ const OrganizationView = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         window.history.back()
       } else {
-        setInfo({
+        const _info = {
           account,
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: ethers.utils.parseBytes32String(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
-        })
+        }
+        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phone']) || _.isEmpty(_info['mail'])) {
+          openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
+          window.history.back()
+        } else {
+          setInfo(_info)
+        }
       }
     }).catch((error) => {
       dispatch(hideLoader())

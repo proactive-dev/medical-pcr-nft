@@ -15,6 +15,8 @@ import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 const FormItem = Form.Item
 const {Option} = Select
 
+const formRef = React.createRef()
+
 const dateFormat = 'DD/MM/YYYY'
 
 const InfoEdit = (props) => {
@@ -23,7 +25,6 @@ const InfoEdit = (props) => {
   const chain = useSelector(state => state.chain)
   const {contract} = chain
   const {intl, history, location, match} = props
-  const formRef = React.createRef()
 
   useEffect(() => {
     if (!_.isEmpty(location.state) && !_.isEmpty(location.state.info)) {
