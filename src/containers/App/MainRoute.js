@@ -7,6 +7,7 @@ import {
   EDIT,
   FILTER_ME,
   LIST,
+  NEW,
   REQUEST,
   TYPE_ORGANIZATION,
   TYPE_USER,
@@ -16,6 +17,8 @@ import InfoEdit from '../../routes/main/InfoEdit'
 import UserView from '../../routes/main/UserView'
 import OrganizationView from '../../routes/main/OrganizationView'
 import OrganizationList from '../../routes/main/OrganizationList'
+import RequestEdit from '../../routes/main/RequestEdit'
+import RequestList from '../../routes/main/RequestList'
 
 const MainRoute = (props) => {
   const {match} = props
@@ -40,7 +43,7 @@ const MainRoute = (props) => {
              component={UserView}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${LIST}/:filter`}
              component={UserView}/>
-      <Route exact path={`${match.url}${CERTIFICATE}/${EDIT}/:id`}
+      <Route exact path={`${match.url}${CERTIFICATE}/${NEW}/:id`}
              component={UserView}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${VIEW}/:id`}
              component={UserView}/>
@@ -48,10 +51,10 @@ const MainRoute = (props) => {
              component={OrganizationList}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${VIEW}/:account`}
              component={OrganizationView}/>
-      <Route exact path={`${match.url}${REQUEST}/${EDIT}`}
-             component={UserView}/>
+      <Route exact path={`${match.url}${REQUEST}/${NEW}`}
+             component={RequestEdit}/>
       <Route exact path={`${match.url}${REQUEST}/${LIST}`}
-             component={UserView}/>
+             component={RequestList}/>
       <Redirect exact from="/" to={getHomePath()}/>
       <Redirect from="*" to="/404"/>
     </Switch>

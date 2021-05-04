@@ -66,8 +66,9 @@ export const getDateTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleString()
 }
 
-export const getTimeForTable = (timestamp) => {
-  return Moment.utc(timestamp * 1000).format()
+const dateFormat = 'DD/MM/YYYY'
+export const timestamp2Date = (timestamp) => {
+  return Moment.unix(timestamp).format(dateFormat)
 }
 
 export const getYearMonth = (dateTimeString) => {

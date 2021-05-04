@@ -17,6 +17,7 @@ export const LANGUAGES = [
 export const SUCCESS = 'success'
 export const ERROR = 'error'
 export const NOTIFICATION_TIMEOUT = 5 // seconds
+export const QRREADER_TIMEOUT = 5000 // miliseconds
 
 export const DEFAULT_PRECISION = 2
 export const DEFAULT_DECIMALS = 18
@@ -73,12 +74,12 @@ export const ADMIN_MENUS = [
 
 export const ISSUER_MENUS = [
   {
-    path: `${REQUEST}/${EDIT}`,
+    path: `${REQUEST}/${NEW}`,
     title: 'test.request'
   },
   {
     path: `${REQUEST}/${LIST}`,
-    title: 'issue.certificate'
+    title: 'issue.certificate.title'
   },
   {
     path: `${CERTIFICATE}/${LIST}/${FILTER_ALL}`,
