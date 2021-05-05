@@ -46,6 +46,15 @@ export const GENDER = [
   }
 ]
 
+export const TEST_RESULT = [
+  {
+    key: 'negative', value: 0
+  },
+  {
+    key: 'positive', value: 1
+  }
+]
+
 export const USER_MENUS = [
   {
     path: `${TYPE_USER}/${EDIT}`,

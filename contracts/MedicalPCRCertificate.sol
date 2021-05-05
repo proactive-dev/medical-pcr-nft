@@ -42,11 +42,17 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     }
 
     struct Certificate {
-        bytes32 name;
-        bytes32 description;
+        uint256 requestId;
+        TestRequest request;
+        address organizationAccount;
+        Organization organization;
+        bytes32 sample;
+        bytes32 collectionMethod;
+        bytes32 collectionDate;
+        bytes32 testMethod;
+        TestResult result;
+        bytes32 resultDate;
         string fileHash;
-        string imageHash;
-        uint256 sampledAt;
         uint256 issuedAt;
         uint256 expireAt;
     }
@@ -59,7 +65,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     Counters.Counter private _testIdTracker;
 
     mapping (uint256 => Certificate) public certificates;
-    Counters.Counter private _tokenIdTracker;
+    uint256[] certificateIds;
 
     event SetPerson(address who, bytes32 name, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail);
     event SetOrganization(address who, bytes32 name, bytes32 representative, bytes32 streetAddress, bytes32 phone, bytes32 mail);
@@ -168,31 +174,39 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (_ids, _requests);
     }
 
-    function mint(address _who, bytes32 _name, bytes32 _description, string memory _fileHash, string memory _imageHash) public {
+    function mint(uint256 _requestId, address _organizationAccount, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Owner or issuer can mint certificates.");
 
-        uint256 _id = _tokenIdTracker.current();
-        _mint(_who, _id);
-        _setTokenURI(_id, _fileHash);
+        TestRequest memory _testRequest = testRequests[_requestId];
+        address _who = _testRequest.account;
+        testRequests[_requestId].issuedAt = block.timestamp;
 
-        certificates[_id] = Certificate({
-            name: _name,
-            description: _description,
+        certificates[_requestId] = Certificate({
+            requestId: _requestId,
+            request:_testRequest,
+            organizationAccount: _organizationAccount,
+            organization: organizations[_organizationAccount],
+            sample: _sample,
+            collectionMethod: _collectionMethod,
+            collectionDate: _collectionDate,
+            testMethod: _testMethod,
+            result: _result,
+            resultDate: _resultDate,
             fileHash: _fileHash,
-            imageHash: _imageHash,
-            sampledAt: 0,
             issuedAt: block.timestamp,
             expireAt: block.timestamp + 15 * 1 days
         });
+        certificateIds.push(_requestId);
 
-        _tokenIdTracker.increment();
+        _mint(_who, _requestId);
+        _setTokenURI(_requestId, _fileHash);
     }
 
     function getCertificates() public view returns (uint256[] memory, Certificate[] memory){
-        uint256 certificatesCount = balanceOf(msg.sender);
-        uint256[] memory _ids = new uint256[](certificatesCount);
-        Certificate[] memory _certificates = new Certificate[](certificatesCount);
-        for (uint i = 0; i < certificatesCount; i++) {
+        uint256 _certificatesCount = balanceOf(msg.sender);
+        uint256[] memory _ids = new uint256[](_certificatesCount);
+        Certificate[] memory _certificates = new Certificate[](_certificatesCount);
+        for (uint i = 0; i < _certificatesCount; i++) {
             uint256 _id = tokenOfOwnerByIndex(msg.sender, i);
             _ids[i] = _id;
             _certificates[i] = certificates[_id];
@@ -200,12 +214,22 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (_ids, _certificates);
     }
 
-    function getCertificate(uint256 id) public view returns (Certificate memory){
-        return certificates[id];
+    function getAllCertificates() public view returns (uint256[] memory, Certificate[] memory){
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Only owner, organization can access all certificates.");
+
+        uint256 _certificatesCount = certificateIds.length;
+        uint256[] memory _ids = new uint256[](_certificatesCount);
+        Certificate[] memory _certificates = new Certificate[](_certificatesCount);
+        for (uint i = 0; i < _certificatesCount; i++) {
+            uint256 _id = certificateIds[i];
+            _ids[i] = _id;
+            _certificates[i] = certificates[_id];
+        }
+        return (_ids, _certificates);
     }
 
-    function getCertificateByIndex(uint256 index) public view returns (uint256, Certificate memory){
-        uint256 _id = tokenOfOwnerByIndex(msg.sender, index);
-        return (_id, certificates[_id]);
+    function getCertificate(uint256 _id) public view returns (Certificate memory){
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender) || (certificates[_id].request.account == msg.sender), "Only owner, organization, or self can access certificate.");
+        return certificates[_id];
     }
 }
