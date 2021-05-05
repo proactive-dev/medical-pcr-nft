@@ -77,7 +77,7 @@ const InfoEdit = (props) => {
   const getUserForm = () => {
     return (
       <Form
-        name="register-form"
+        name="user-form"
         layout={'vertical'}
         ref={formRef}
         onFinish={saveUser}>
@@ -114,8 +114,9 @@ const InfoEdit = (props) => {
           <Select className="gx-mt-1 gx-mb-1" allowClear>
             {
               GENDER.map(gender =>
-                <Option value={gender.value}
-                        key={gender.key}>{intl.formatMessage({id: `gender.${gender.key}`})}</Option>
+                <Option value={gender.value} key={gender.key}>
+                  {intl.formatMessage({id: `gender.${gender.key}`})}
+                </Option>
               )
             }
           </Select>
@@ -144,7 +145,7 @@ const InfoEdit = (props) => {
   const getOrganizationForm = () => {
     return (
       <Form
-        name="register-form"
+        name="organization-form"
         layout={'vertical'}
         ref={formRef}
         onFinish={saveOrganization}>

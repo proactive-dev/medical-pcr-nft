@@ -43,7 +43,7 @@ const UserView = (props) => {
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }
-        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phone']) || _.isEmpty(_info['mail'])) {
+        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
           window.history.back()
         } else {
@@ -80,11 +80,11 @@ const UserView = (props) => {
 
   return (
     <Spin spinning={loader}>
-      <Button className="gx-m-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCode}>
+      <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCode}>
         &nbsp;<FormattedMessage id="show.qrcode"/>
       </Button>
       <Form
-        name="register-form"
+        name="user-form"
         layout={'vertical'}>
         <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{name || ''}</span>

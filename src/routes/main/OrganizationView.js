@@ -47,7 +47,7 @@ const OrganizationView = (props) => {
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }
-        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phone']) || _.isEmpty(_info['mail'])) {
+        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
           window.history.back()
         } else {
@@ -73,7 +73,7 @@ const OrganizationView = (props) => {
   return (
     <Spin spinning={loader}>
       <Form
-        name="register-form"
+        name="organization-form"
         layout={'vertical'}>
         <FormItem name="name" label={intl.formatMessage({id: 'account'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{account || ''}</span>

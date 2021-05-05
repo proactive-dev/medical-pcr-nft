@@ -5,6 +5,7 @@ import { Button, DatePicker, Form, Input, Modal, Select, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
+import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
 import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
@@ -64,9 +65,12 @@ const RequestEdit = (props) => {
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }
-        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phone']) || _.isEmpty(_info['mail'])) {
+        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         } else {
+          if (_info.birthDate) {
+            _info['birthDate'] = moment(_info.birthDate, dateFormat)
+          }
           formRef.current.setFieldsValue(_info)
         }
       }
@@ -105,11 +109,11 @@ const RequestEdit = (props) => {
 
   return (
     <Spin spinning={loader}>
-      <Button className="gx-m-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCodeModal}>
+      <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCodeModal}>
         &nbsp;<FormattedMessage id="scan.qrCode"/>
       </Button>
       <Form
-        name="register-form"
+        name="request-form"
         layout={'vertical'}
         ref={formRef}
         onFinish={saveTestRequest}>
@@ -158,8 +162,9 @@ const RequestEdit = (props) => {
           <Select className="gx-mt-1 gx-mb-1" allowClear>
             {
               GENDER.map(gender =>
-                <Option value={gender.value}
-                        key={gender.key}>{intl.formatMessage({id: `gender.${gender.key}`})}</Option>
+                <Option value={gender.value} key={gender.key}>
+                  {intl.formatMessage({id: `gender.${gender.key}`})}
+                </Option>
               )
             }
           </Select>
@@ -197,8 +202,6 @@ const RequestEdit = (props) => {
               onScan={handleQrCodeScan}
               onError={handleQrCodeError}
             />
-            <br/>
-            <h5 className={'gx-m-2'}>{'address'}</h5>
           </div>
         </Modal>
       }
