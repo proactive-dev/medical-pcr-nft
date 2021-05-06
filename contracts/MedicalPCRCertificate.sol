@@ -174,7 +174,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (_ids, _requests);
     }
 
-    function mint(uint256 _requestId, address _organizationAccount, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) public {
+    function mintCertificate(uint256 _requestId, address _organizationAccount, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Owner or issuer can mint certificates.");
 
         TestRequest memory _testRequest = testRequests[_requestId];
