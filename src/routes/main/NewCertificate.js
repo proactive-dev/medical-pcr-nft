@@ -5,30 +5,48 @@ import { DatePicker, Divider, Form, Input, Select, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
-import { ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
+import { Font, pdf } from '@react-pdf/renderer'
+import { COMMON_DATE_FORMAT, ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { findGender } from '../../util/helpers'
+import { findGender, uploadIPFS } from '../../util/helpers'
+import CertificatePDF from '../../components/CertificatePDF'
+import SourceHanSansJPExtraLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-ExtraLight.ttf'
+import SourceHanSansJPLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Light.ttf'
+import SourceHanSansJPMedium from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Medium.ttf'
+import SourceHanSansJPNormal from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Normal.ttf'
+import SourceHanSansJPBold from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Bold.ttf'
+import SourceHanSansJPHeavy from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Heavy.ttf'
 
 const FormItem = Form.Item
 const {Option} = Select
 
 const formRef = React.createRef()
 
-const dateFormat = 'DD/MM/YYYY'
-
 const NewCertificate = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {address, contract} = chain
+  const {address, contract, ipfs} = chain
   const {intl, match, history} = props
   const [requestId, setRequestId] = useState(null)
   const [request, setRequest] = useState({})
   const [organization, setOrganization] = useState({})
 
   useEffect(() => {
+    Font.register({
+      family: 'SourceHanSansJP',
+      fonts: [
+        {src: SourceHanSansJPExtraLight, fontWeight: 200 },
+        {src: SourceHanSansJPLight, fontWeight: 300 },
+        {src: SourceHanSansJPNormal, fontWeight: 400 },
+        {src: SourceHanSansJPMedium, fontWeight: 500 },
+        {src: SourceHanSansJPBold, fontWeight: 700 },
+        {src: SourceHanSansJPHeavy, fontWeight: 900 },
+      ]
+    })
+
     let id = match.params.id
     if (!_.isEmpty(id) && !_.isUndefined(id)) {
       setRequestId(id)
@@ -100,10 +118,26 @@ const NewCertificate = (props) => {
   }
 
   const submit = async (values) => {
-    // TODO: Export to PDF
-    // TODO: Upload to IPFS
-    // TODO: Mint request to smart contract
-    // await mintRequest(values, fileHash)
+    // Export to PDF
+    const file = await pdf(
+      <CertificatePDF
+        id={requestId}
+        request={request}
+        issuer={organization}
+        test={values}/>
+    ).toBlob()
+
+    // Upload to IPFS and Mint
+    dispatch(showLoader())
+    const fileHash = await uploadIPFS({ipfs, file})
+    dispatch(hideLoader())
+    if (fileHash) {
+      console.log('fileHash', fileHash)
+      // Mint request to smart contract
+      // await mintRequest(values, fileHash)// TODO
+    } else {
+      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.fail2UploadIPFS'}))
+    }
   }
 
   const mintRequest = async (values, fileHash) => {
@@ -113,14 +147,14 @@ const NewCertificate = (props) => {
       address,
       ethers.utils.formatBytes32String(values.sample),
       ethers.utils.formatBytes32String(values.collectionMethod),
-      ethers.utils.formatBytes32String(values.collectionDate.format(dateFormat)),
+      ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT)),
       ethers.utils.formatBytes32String(values.testMethod),
       values.testResult,
-      ethers.utils.formatBytes32String(values.testResultDate.format(dateFormat)),
+      ethers.utils.formatBytes32String(values.testResultDate.format(COMMON_DATE_FORMAT)),
       fileHash
     ).then((result) => {
       dispatch(hideLoader())
-      openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.request'}))
+      openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.mint'}))
       history.push('/')
     }).catch((error) => {
       dispatch(hideLoader())
@@ -193,7 +227,7 @@ const NewCertificate = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={dateFormat}/>
+          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
         </FormItem>
         <FormItem
           name="testMethod"
@@ -225,7 +259,7 @@ const NewCertificate = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={dateFormat}/>
+          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
         </FormItem>
       </Form>
       <Divider orientation="left">
