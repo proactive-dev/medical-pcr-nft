@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { BigNumber } from 'bignumber.js'
 import Moment from 'moment'
-import { DEFAULT_DECIMALS, DEFAULT_PRECISION, GENDER } from '../constants/AppConfigs'
+import { COMMON_DATE_FORMAT, DEFAULT_DECIMALS, DEFAULT_PRECISION, GENDER } from '../constants/AppConfigs'
 
 // main helper functions
 
@@ -66,9 +66,8 @@ export const getDateTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleString()
 }
 
-const dateFormat = 'DD/MM/YYYY'
 export const timestamp2Date = (timestamp) => {
-  return Moment.unix(timestamp).format(dateFormat)
+  return Moment.unix(timestamp).format(COMMON_DATE_FORMAT)
 }
 
 export const getYearMonth = (dateTimeString) => {

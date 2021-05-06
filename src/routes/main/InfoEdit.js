@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
-import { ERROR, GENDER, SUCCESS, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
+import { COMMON_DATE_FORMAT, ERROR, GENDER, SUCCESS, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
@@ -16,8 +16,6 @@ const FormItem = Form.Item
 const {Option} = Select
 
 const formRef = React.createRef()
-
-const dateFormat = 'DD/MM/YYYY'
 
 const InfoEdit = (props) => {
   const dispatch = useDispatch()
@@ -30,7 +28,7 @@ const InfoEdit = (props) => {
     if (!_.isEmpty(location.state) && !_.isEmpty(location.state.info)) {
       const info = location.state.info
       if (info && info.birthDate) {
-        info['birthDate'] = moment(info.birthDate, dateFormat)
+        info['birthDate'] = moment(info.birthDate, COMMON_DATE_FORMAT)
       }
       formRef.current.setFieldsValue(info)
     }
@@ -40,7 +38,7 @@ const InfoEdit = (props) => {
     dispatch(showLoader())
     contract.setPerson(
       ethers.utils.formatBytes32String(values.name),
-      ethers.utils.formatBytes32String(values.birthDate.format(dateFormat)),
+      ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
       values.gender,
       ethers.utils.formatBytes32String(values.residence),
       ethers.utils.formatBytes32String(values.phoneNumber),
@@ -103,7 +101,7 @@ const InfoEdit = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={dateFormat}/>
+          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
         </FormItem>
         <FormItem
           name="gender"

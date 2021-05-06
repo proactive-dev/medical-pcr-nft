@@ -19,6 +19,8 @@ export const ERROR = 'error'
 export const NOTIFICATION_TIMEOUT = 5 // seconds
 export const QRREADER_TIMEOUT = 5000 // miliseconds
 
+export const COMMON_DATE_FORMAT = 'DD/MM/YYYY'
+
 export const DEFAULT_PRECISION = 2
 export const DEFAULT_DECIMALS = 18
 

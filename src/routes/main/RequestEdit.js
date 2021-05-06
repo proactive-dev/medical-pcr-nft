@@ -9,7 +9,7 @@ import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
 import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
-import { ERROR, GENDER, QRREADER_TIMEOUT, SUCCESS } from '../../constants/AppConfigs'
+import { COMMON_DATE_FORMAT, ERROR, GENDER, QRREADER_TIMEOUT, SUCCESS } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
@@ -18,8 +18,6 @@ const FormItem = Form.Item
 const {Option} = Select
 
 const formRef = React.createRef()
-
-const dateFormat = 'DD/MM/YYYY'
 
 const RequestEdit = (props) => {
   const dispatch = useDispatch()
@@ -34,7 +32,7 @@ const RequestEdit = (props) => {
     contract.newTestRequest(
       values.account,
       ethers.utils.formatBytes32String(values.name),
-      ethers.utils.formatBytes32String(values.birthDate.format(dateFormat)),
+      ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
       values.gender,
       ethers.utils.formatBytes32String(values.residence),
       ethers.utils.formatBytes32String(values.phoneNumber),
@@ -69,7 +67,7 @@ const RequestEdit = (props) => {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         } else {
           if (_info.birthDate) {
-            _info['birthDate'] = moment(_info.birthDate, dateFormat)
+            _info['birthDate'] = moment(_info.birthDate, COMMON_DATE_FORMAT)
           }
           formRef.current.setFieldsValue(_info)
         }
@@ -151,7 +149,7 @@ const RequestEdit = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={dateFormat}/>
+          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
         </FormItem>
         <FormItem
           name="gender"
