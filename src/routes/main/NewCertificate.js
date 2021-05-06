@@ -38,12 +38,12 @@ const NewCertificate = (props) => {
     Font.register({
       family: 'SourceHanSansJP',
       fonts: [
-        {src: SourceHanSansJPExtraLight, fontWeight: 200 },
-        {src: SourceHanSansJPLight, fontWeight: 300 },
-        {src: SourceHanSansJPNormal, fontWeight: 400 },
-        {src: SourceHanSansJPMedium, fontWeight: 500 },
-        {src: SourceHanSansJPBold, fontWeight: 700 },
-        {src: SourceHanSansJPHeavy, fontWeight: 900 },
+        {src: SourceHanSansJPExtraLight, fontWeight: 200},
+        {src: SourceHanSansJPLight, fontWeight: 300},
+        {src: SourceHanSansJPNormal, fontWeight: 400},
+        {src: SourceHanSansJPMedium, fontWeight: 500},
+        {src: SourceHanSansJPBold, fontWeight: 700},
+        {src: SourceHanSansJPHeavy, fontWeight: 900}
       ]
     })
 
@@ -132,9 +132,8 @@ const NewCertificate = (props) => {
     const fileHash = await uploadIPFS({ipfs, file})
     dispatch(hideLoader())
     if (fileHash) {
-      console.log('fileHash', fileHash)
       // Mint request to smart contract
-      // await mintRequest(values, fileHash)// TODO
+      await mintRequest(values, fileHash)
     } else {
       openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.fail2UploadIPFS'}))
     }
@@ -142,8 +141,8 @@ const NewCertificate = (props) => {
 
   const mintRequest = async (values, fileHash) => {
     dispatch(showLoader())
-    contract.mint(
-      requestId,
+    contract.mintCertificate(
+      Number(requestId),
       address,
       ethers.utils.formatBytes32String(values.sample),
       ethers.utils.formatBytes32String(values.collectionMethod),

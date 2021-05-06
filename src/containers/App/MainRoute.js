@@ -20,6 +20,8 @@ import OrganizationList from '../../routes/main/OrganizationList'
 import RequestEdit from '../../routes/main/RequestEdit'
 import RequestList from '../../routes/main/RequestList'
 import NewCertificate from '../../routes/main/NewCertificate'
+import CertificateList from '../../routes/main/CertificateList'
+import CertificateView from '../../routes/main/CertificateView'
 
 const MainRoute = (props) => {
   const {match} = props
@@ -43,11 +45,11 @@ const MainRoute = (props) => {
       <Route exact path={`${match.url}${TYPE_USER}/${VIEW}`}
              component={UserView}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${LIST}/:filter`}
-             component={UserView}/>
+             component={CertificateList}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${NEW}/:id`}
              component={NewCertificate}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${VIEW}/:id`}
-             component={UserView}/>
+             component={CertificateView}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${LIST}`}
              component={OrganizationList}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${VIEW}/:account`}
