@@ -21,7 +21,7 @@ const InfoEdit = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {contract} = chain
+  const {address, contract} = chain
   const {intl, history, location, match} = props
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const InfoEdit = (props) => {
   const saveUser = async (values) => {
     dispatch(showLoader())
     contract.setPerson(
+      address,
       ethers.utils.formatBytes32String(values.name),
       ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
       values.gender,

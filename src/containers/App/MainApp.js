@@ -5,7 +5,14 @@ import { FormattedMessage, injectIntl } from 'react-intl'
 import { isMobile } from 'react-device-detect'
 import { ethers } from 'ethers'
 import _ from 'lodash'
-import { CONTRACT_ADDRESS, COPYRIGHT_COMPANY, ERROR, RPC_PROVIDER, STORAGE_KEY } from '../../constants/AppConfigs'
+import {
+  CONTRACT_ADDRESS,
+  CONTRACT_OWNER_KEY,
+  COPYRIGHT_COMPANY,
+  ERROR,
+  RPC_PROVIDER,
+  STORAGE_KEY
+} from '../../constants/AppConfigs'
 import { NAV_STYLE_DRAWER, NAV_STYLE_FIXED, NAV_STYLE_MINI_SIDEBAR, TAB_SIZE } from '../../constants/ThemeSetting'
 import { decrypt, encrypt } from '../../util/crypto'
 import MedicalPCRCertificate from '../../artifacts/contracts/MedicalPCRCertificate.sol/MedicalPCRCertificate.json'
@@ -61,7 +68,7 @@ const MainApp = (props) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       try {
         await window.ethereum.enable()
-        setupEthereum(provider.getSigner())
+        setWallet(provider.getSigner())
       } catch (error) {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.fail2ConnectAccount'}))
         console.log(error)
@@ -71,15 +78,15 @@ const MainApp = (props) => {
     }
   }
 
-  const setWallet = (data) => {
+  const setWallet = async (wallet) => {
+    // Setup contract
+    const owner = new ethers.Wallet(CONTRACT_OWNER_KEY)
     const provider = new ethers.providers.JsonRpcProvider(RPC_PROVIDER)
-    setupEthereum(data.connect(provider))
-  }
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, MedicalPCRCertificate.abi, owner.connect(provider))
+    // Get user address
+    const address = await wallet.getAddress()
 
-  const setupEthereum = async (signer) => {
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, MedicalPCRCertificate.abi, signer)
-    const address = await signer.getAddress()
-    dispatch(setContract({contract, signer, address}))
+    dispatch(setContract({contract, address}))
     getRoles({contract, address})
   }
 

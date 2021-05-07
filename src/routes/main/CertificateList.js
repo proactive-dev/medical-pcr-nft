@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { List, Spin } from 'antd'
 import _ from 'lodash'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { openNotificationWithIcon } from '../../components/Messages'
-import { CERTIFICATE, ERROR, FILTER_ME, VIEW } from '../../constants/AppConfigs'
-import { timestamp2Date } from '../../util/helpers'
+import { ERROR, FILTER_ME } from '../../constants/AppConfigs'
+import { ipfsLink, timestamp2Date } from '../../util/helpers'
 
 const CertificateList = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
   const {intl, match} = props
-  const {contract} = chain
+  const {address, contract} = chain
   const [certificates, setCertificates] = useState([])
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const CertificateList = (props) => {
   const fetchData = (_filter) => {
     dispatch(showLoader())
     if (_filter === FILTER_ME) {
-      contract.getCertificates().then((result) => {
+      contract.getCertificates(address).then((result) => {
         dispatch(hideLoader())
         let _certificates = []
         result[0].forEach((id, index) => {
@@ -51,6 +51,7 @@ const CertificateList = (props) => {
         result[0].forEach((id, index) => {
           _certificates.push({
             id: id.toNumber(),
+            fileHash: result[1][index]['fileHash'],
             issuedAt: timestamp2Date(result[1][index]['issuedAt'].toNumber()),
             expireAt: timestamp2Date(result[1][index]['expireAt'].toNumber())
           })
@@ -75,9 +76,10 @@ const CertificateList = (props) => {
               title={item.issuedAt}
               description={`${intl.formatMessage({id: 'expire.date'})} ${item.expireAt}`}
             />
-            <Link to={`/${CERTIFICATE}/${VIEW}/${item.id}`} className="gx-pointer gx-link gx-text-underline">
+            <a className="gx-link gx-text-underline" href={ipfsLink(item.fileHash)} target="_blank"
+               rel="noopener noreferrer">
               <FormattedMessage id="detail"/>
-            </Link>
+            </a>
           </List.Item>
         }
       />

@@ -2,9 +2,8 @@ import { SET_CONTRACT, SET_IPFS, SET_ROLES } from '../../constants/ActionTypes'
 
 const INIT_STATE = {
   ipfs: null,
-  address: null,
   contract: null,
-  signer: null,
+  address: null,
   roles: {}
 }
 
@@ -16,12 +15,11 @@ export default (state = INIT_STATE, action) => {
         ipfs: action.payload
       }
     case SET_CONTRACT:
-      const {contract, signer, address} = action.payload
+      const {contract, address} = action.payload
       return {
         ...state,
         address,
-        contract,
-        signer
+        contract
       }
     case SET_ROLES:
       return {

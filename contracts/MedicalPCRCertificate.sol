@@ -45,7 +45,8 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         uint256 requestId;
         TestRequest request;
         address organizationAccount;
-        Organization organization;
+//        Organization organization;
+        bytes32 sampleId;
         bytes32 sample;
         bytes32 collectionMethod;
         bytes32 collectionDate;
@@ -79,15 +80,17 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         )
     {}
 
-    function setPerson(bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
-        people[msg.sender].name = _name;
-        people[msg.sender].birth = _birth;
-        people[msg.sender].gender = _gender;
-        people[msg.sender].residence = _residence;
-        people[msg.sender].phone = _phone;
-        people[msg.sender].mail = _mail;
+    function setPerson(address _who, bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can set organization data.");
 
-        emit SetPerson(msg.sender, _name, _birth, _gender, _residence, _phone, _mail);
+        people[_who].name = _name;
+        people[_who].birth = _birth;
+        people[_who].gender = _gender;
+        people[_who].residence = _residence;
+        people[_who].phone = _phone;
+        people[_who].mail = _mail;
+
+        emit SetPerson(_who, _name, _birth, _gender, _residence, _phone, _mail);
     }
 
     function setOrganization(address _who, bytes32 _name, bytes32 _representative, bytes32 _streetAddress, bytes32 _phone, bytes32 _mail) public {
@@ -174,7 +177,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (_ids, _requests);
     }
 
-    function mintCertificate(uint256 _requestId, address _organizationAccount, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) public {
+    function mintCertificate(uint256 _requestId, address _organizationAccount, bytes32 _sampleId, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender), "Owner or issuer can mint certificates.");
 
         TestRequest memory _testRequest = testRequests[_requestId];
@@ -185,7 +188,8 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
             requestId: _requestId,
             request:_testRequest,
             organizationAccount: _organizationAccount,
-            organization: organizations[_organizationAccount],
+//            organization: organizations[_organizationAccount],
+            sampleId: _sampleId,
             sample: _sample,
             collectionMethod: _collectionMethod,
             collectionDate: _collectionDate,
@@ -202,12 +206,14 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         _setTokenURI(_requestId, _fileHash);
     }
 
-    function getCertificates() public view returns (uint256[] memory, Certificate[] memory){
-        uint256 _certificatesCount = balanceOf(msg.sender);
+    function getCertificates(address _who) public view returns (uint256[] memory, Certificate[] memory){
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender) || (msg.sender == _who), "Only owner, organization, or self can access certificates of a person.");
+
+        uint256 _certificatesCount = balanceOf(_who);
         uint256[] memory _ids = new uint256[](_certificatesCount);
         Certificate[] memory _certificates = new Certificate[](_certificatesCount);
         for (uint i = 0; i < _certificatesCount; i++) {
-            uint256 _id = tokenOfOwnerByIndex(msg.sender, i);
+            uint256 _id = tokenOfOwnerByIndex(_who, i);
             _ids[i] = _id;
             _certificates[i] = certificates[_id];
         }

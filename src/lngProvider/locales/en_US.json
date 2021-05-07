@@ -38,6 +38,7 @@
   "collection.date": "Collection Date",
   "collection.method": "Collection Method",
   "collection.sample": "Sample",
+  "collection.sampleId": "Sample Number",
   "confirm": "Confirm",
   "confirm.load.description": "Saved account has been found.\n Do you want to load it?",
   "confirm.save.description": "Do you want to save your account?\n If you save your account, you can use your account without create or import.",

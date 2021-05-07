@@ -144,6 +144,7 @@ const NewCertificate = (props) => {
     contract.mintCertificate(
       Number(requestId),
       address,
+      ethers.utils.formatBytes32String(values.sampleId),
       ethers.utils.formatBytes32String(values.sample),
       ethers.utils.formatBytes32String(values.collectionMethod),
       ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT)),
@@ -204,6 +205,14 @@ const NewCertificate = (props) => {
         layout={'vertical'}
         ref={formRef}
         onFinish={submit}>
+        <FormItem
+          name="sampleId"
+          label={intl.formatMessage({id: 'collection.sampleId'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
         <FormItem
           name="sample"
           label={intl.formatMessage({id: 'collection.sample'})}

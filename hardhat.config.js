@@ -12,12 +12,12 @@ module.exports = {
     local: {
       url: process.env.REACT_APP_RPC_PROVIDER_LOCAL,
       // chainId: parseInt(process.env.REACT_APP_NETWORK_ID_LOCAL),
-      accounts: [process.env.PRIV_KEY_LOCAL]
+      accounts: [process.env.REACT_APP_PRIV_KEY_LOCAL]
     },
     private: {
       url: process.env.REACT_APP_RPC_PROVIDER_PROD,
       chainId: parseInt(process.env.REACT_APP_NETWORK_ID_PROD),
-      accounts: [process.env.PRIV_KEY_PROD]
+      accounts: [process.env.REACT_APP_PRIV_KEY_PROD]
     }
   },
   solidity: {

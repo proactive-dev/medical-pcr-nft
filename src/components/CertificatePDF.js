@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
 
 const CertificatePDF = (props) => {
   const {id, request, issuer, test} = props
-  const {sample, collectionMethod, collectionDate, testMethod, testResult, testResultDate} = test
+  const {sampleId, sample, collectionMethod, collectionDate, testMethod, testResult, testResultDate} = test
 
   return (
     <Document>
@@ -125,8 +125,17 @@ const CertificatePDF = (props) => {
             <Text style={styles.value}>{request.email}</Text>
           </View>
         </View>
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>
+            {'上記の者を検査を行った結果、その結果は下記のとおりである。よって、この証明を交付する。'}
+          </Text>
+        </View>
         <View style={styles.testInfoContainer}>
           <Text style={styles.subTitle}>検査情報</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>検体ナンバー</Text>
+            <Text style={styles.value}>{sampleId}</Text>
+          </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>採取検体</Text>
             <Text style={styles.value}>{sample}</Text>
@@ -151,11 +160,6 @@ const CertificatePDF = (props) => {
             <Text style={styles.label}>結果判定日時</Text>
             <Text style={styles.value}>{testResultDate.format(COMMON_DATE_FORMAT)}</Text>
           </View>
-        </View>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            {'上記の者を検査を行った結果、その結果は下記のとおりである。よって、この証明を交付する。'}
-          </Text>
         </View>
         <View style={styles.issuerInfoContainer}>
           <View style={styles.infoRow}>

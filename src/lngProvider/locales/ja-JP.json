@@ -38,6 +38,7 @@
   "collection.date": "検体採取日時",
   "collection.method": "検体採取方法",
   "collection.sample": "採取検体",
+  "collection.sampleId": "検体ナンバー",
   "confirm": "確認",
   "confirm.load.description": "保存されているアカウントが見つかりました。\nロードしますか?",
   "confirm.save.description": "アカウントを保存しますか?\nアカウントを保存すると、作成またはインポートしなくてもアカウントを使用できます。",
