@@ -9,6 +9,7 @@ import {
   LIST,
   NEW,
   REQUEST,
+  SCAN,
   TYPE_ORGANIZATION,
   TYPE_USER,
   VIEW
@@ -22,6 +23,7 @@ import RequestList from '../../routes/main/RequestList'
 import NewCertificate from '../../routes/main/NewCertificate'
 import CertificateList from '../../routes/main/CertificateList'
 import CertificateView from '../../routes/main/CertificateView'
+import CertificateQRReader from '../../routes/main/CertificateQRReader'
 
 const MainRoute = (props) => {
   const {match} = props
@@ -50,6 +52,8 @@ const MainRoute = (props) => {
              component={NewCertificate}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${VIEW}/:id`}
              component={CertificateView}/>
+      <Route exact path={`${match.url}${CERTIFICATE}/${SCAN}`}
+             component={CertificateQRReader}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${LIST}`}
              component={OrganizationList}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${VIEW}/:account`}

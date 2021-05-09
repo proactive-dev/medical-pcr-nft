@@ -17,7 +17,7 @@ export const LANGUAGES = [
 export const SUCCESS = 'success'
 export const ERROR = 'error'
 export const NOTIFICATION_TIMEOUT = 5 // seconds
-export const QRREADER_TIMEOUT = 5000 // miliseconds
+export const QRREADER_TIMEOUT = 3000 // miliseconds
 
 export const COMMON_DATE_FORMAT = 'DD/MM/YYYY'
 
@@ -32,6 +32,7 @@ export const NEW = 'new'
 export const EDIT = 'edit'
 export const VIEW = 'view'
 export const LIST = 'list'
+export const SCAN = 'scan'
 export const CERTIFICATE = 'certificate'
 export const REQUEST = 'request'
 export const TYPE_USER = 'user'
@@ -69,6 +70,10 @@ export const USER_MENUS = [
   {
     path: `${CERTIFICATE}/${LIST}/${FILTER_ME}`,
     title: 'view.my.cert'
+  },
+  {
+    path: `${CERTIFICATE}/${SCAN}`,
+    title: 'read.other'
   }
 ]
 

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { BigNumber } from 'bignumber.js'
 import Moment from 'moment'
-import { COMMON_DATE_FORMAT, DEFAULT_DECIMALS, DEFAULT_PRECISION, GENDER } from '../constants/AppConfigs'
+import { COMMON_DATE_FORMAT, DEFAULT_DECIMALS, DEFAULT_PRECISION, GENDER, TEST_RESULT } from '../constants/AppConfigs'
 
 // main helper functions
 
@@ -19,6 +19,11 @@ export const matches = (array1, array2) => {
 export const findGender = (value) => {
   const gender = _.find(GENDER, {'value': value})
   return gender.key
+}
+
+export const findResult = (value) => {
+  const result = _.find(TEST_RESULT, {'value': value})
+  return result.key
 }
 
 export const isPositive = (value) => {
