@@ -1,4 +1,4 @@
-export const COPYRIGHT_COMPANY = 'Xyon, Inc. All Rights Reserved.'
+export const COPYRIGHT_COMPANY = 'JAPAN MEDICAL PROMOTION FOUNDATION. All Rights Reserved.'
 export const PROJECT_NAME = 'PCR PASS'
 export const STORAGE_KEY = 'xy-pcr-pass'
 
