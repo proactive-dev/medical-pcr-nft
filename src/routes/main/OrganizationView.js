@@ -75,7 +75,7 @@ const OrganizationView = (props) => {
       <Form
         name="organization-form"
         layout={'vertical'}>
-        <FormItem name="name" label={intl.formatMessage({id: 'account'})}>
+        <FormItem name="account" label={'ID'}>
           <span className="ant-input gx-mt-1 gx-mb-1">{account || ''}</span>
         </FormItem>
         <FormItem name="name" label={intl.formatMessage({id: 'organization.name'})}>

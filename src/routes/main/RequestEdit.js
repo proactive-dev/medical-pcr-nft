@@ -117,7 +117,7 @@ const RequestEdit = (props) => {
         onFinish={saveTestRequest}>
         <FormItem
           name="account"
-          label={intl.formatMessage({id: 'account'})}
+          label={'ID'}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})},
             {
@@ -169,7 +169,7 @@ const RequestEdit = (props) => {
         </FormItem>
         <FormItem
           name="phoneNumber"
-          label={intl.formatMessage({id: 'phoneNumber'})}
+          label={intl.formatMessage({id: 'phoneNumber.example'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
@@ -185,7 +185,7 @@ const RequestEdit = (props) => {
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
         </FormItem>
       </Form>
-      <ConfirmButton intl={intl} form={formRef} btnTitle={'request'} confirmEnabled={true}/>
+      <ConfirmButton intl={intl} form={formRef} btnTitle={'request'} confirmEnabled={false}/>
       {
         qrCodeModalOpen &&
         <Modal

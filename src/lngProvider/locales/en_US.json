@@ -100,6 +100,7 @@
   "pause": "Pause",
   "private.key": "Private Key",
   "phoneNumber": "Phone Number",
+  "phoneNumber.example": "Phone Number (Ex:09011112222)",
   "read.other": "Read Other's Certificate",
   "register": "Register",
   "register.me": "Save Information",

@@ -175,7 +175,7 @@ const NewCertificate = (props) => {
       <Form
         name="user-form"
         layout={'vertical'}>
-        <FormItem name="account" label={intl.formatMessage({id: 'account'})}>
+        <FormItem name="account" label={'ID'}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request.account || ''}</span>
         </FormItem>
         <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
@@ -292,7 +292,7 @@ const NewCertificate = (props) => {
           <span className="ant-input gx-mt-1 gx-mb-1">{organization.email || ''}</span>
         </FormItem>
       </Form>
-      <ConfirmButton intl={intl} form={formRef} btnTitle={'mint'} confirmEnabled={true}/>
+      <ConfirmButton intl={intl} form={formRef} btnTitle={'mint'} confirmEnabled={false}/>
     </Spin>
   )
 }

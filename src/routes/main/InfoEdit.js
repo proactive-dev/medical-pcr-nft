@@ -122,7 +122,7 @@ const InfoEdit = (props) => {
         </FormItem>
         <FormItem
           name="phoneNumber"
-          label={intl.formatMessage({id: 'phoneNumber'})}
+          label={intl.formatMessage({id: 'phoneNumber.example'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
@@ -150,7 +150,7 @@ const InfoEdit = (props) => {
         onFinish={saveOrganization}>
         <FormItem
           name="account"
-          label={intl.formatMessage({id: 'account'})}
+          label={'ID'}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})},
             {
@@ -186,7 +186,7 @@ const InfoEdit = (props) => {
         </FormItem>
         <FormItem
           name="phoneNumber"
-          label={intl.formatMessage({id: 'phoneNumber'})}
+          label={intl.formatMessage({id: 'phoneNumber.example'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
@@ -213,7 +213,7 @@ const InfoEdit = (props) => {
           :
           getUserForm()
       }
-      <ConfirmButton intl={intl} form={formRef} btnTitle={'request'} confirmEnabled={true}/>
+      <ConfirmButton intl={intl} form={formRef} btnTitle={'request'} confirmEnabled={false}/>
     </Spin>
   )
 }

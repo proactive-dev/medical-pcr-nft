@@ -51,7 +51,7 @@ const WalletCreateModal = (props) => {
       <Alert className={'gx-m-1'} message={intl.formatMessage({id: 'create.desc'})} type="warning" showIcon/>
       <Input
         className={'gx-m-1'}
-        addonBefore={intl.formatMessage({id: 'address'})}
+        addonBefore={'ID'}
         addonAfter={
           <CopyToClipboard
             text={address}
