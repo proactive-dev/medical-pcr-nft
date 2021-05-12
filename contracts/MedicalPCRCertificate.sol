@@ -13,12 +13,14 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     enum TestResult {Negative, Positive}
 
     struct Person {
-        bytes32 name;
+        bytes32 firstName;
+        bytes32 lastName;
         bytes32 birth;
         Gender gender;
         bytes32 residence;
         bytes32 phone;
         bytes32 mail;
+        string photo;
     }
 
     struct Organization {
@@ -31,12 +33,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
 
     struct TestRequest {
         address account;
-        bytes32 name;
-        bytes32 birth;
-        Gender gender;
-        bytes32 residence;
-        bytes32 phone;
-        bytes32 mail;
+        Person user;
         uint256 requestedAt;
         uint256 issuedAt;
     }
@@ -68,9 +65,9 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     mapping (uint256 => Certificate) public certificates;
     uint256[] certificateIds;
 
-    event SetPerson(address who, bytes32 name, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail);
+    event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail, string photo);
     event SetOrganization(address who, bytes32 name, bytes32 representative, bytes32 streetAddress, bytes32 phone, bytes32 mail);
-    event NewTestRequest(uint256 id, address who, bytes32 name, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail, uint256 requestedAt);
+    event NewTestRequest(uint256 id, address who, uint256 requestedAt);
 
     constructor()
     	ERC721PresetMinterPauserAutoId(
@@ -80,17 +77,19 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         )
     {}
 
-    function setPerson(address _who, bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
+    function setPerson(address _who, bytes32 _firstName, bytes32 _lastName, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail, string memory _photo) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can set organization data.");
 
-        people[_who].name = _name;
+        people[_who].firstName = _firstName;
+        people[_who].lastName = _lastName;
         people[_who].birth = _birth;
         people[_who].gender = _gender;
         people[_who].residence = _residence;
         people[_who].phone = _phone;
         people[_who].mail = _mail;
+        people[_who].photo = _photo;
 
-        emit SetPerson(_who, _name, _birth, _gender, _residence, _phone, _mail);
+        emit SetPerson(_who, _firstName, _lastName, _birth, _gender, _residence, _phone, _mail, _photo);
     }
 
     function setOrganization(address _who, bytes32 _name, bytes32 _representative, bytes32 _streetAddress, bytes32 _phone, bytes32 _mail) public {
@@ -141,21 +140,16 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         return (isAdmin, isIssuer);
     }
 
-    function newTestRequest(address _who, bytes32 _name, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail) public {
+    function newTestRequest(address _who) public {
         uint256 _id = _testIdTracker.current();
 
         testRequests[_id].account = _who;
-        testRequests[_id].name = _name;
-        testRequests[_id].birth = _birth;
-        testRequests[_id].gender = _gender;
-        testRequests[_id].residence = _residence;
-        testRequests[_id].phone = _phone;
-        testRequests[_id].mail = _mail;
+        testRequests[_id].user = people[_who];
         testRequests[_id].requestedAt = block.timestamp;
         testRequests[_id].issuedAt = 0;
 
         _testIdTracker.increment();
-        emit NewTestRequest(_id, _who, _name, _birth, _gender, _residence, _phone, _mail, block.timestamp);
+        emit NewTestRequest(_id, _who, block.timestamp);
     }
 
     function getTestRequest(uint256 _id) public view returns (TestRequest memory) {
