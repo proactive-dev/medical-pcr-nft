@@ -6,10 +6,6 @@ export const LANGUAGES = [
   {
     code: 'ja',
     name: '日本語'
-  },
-  {
-    code: 'en',
-    name: 'English'
   }
 ]
 

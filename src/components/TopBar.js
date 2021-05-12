@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { Layout } from 'antd'
 import { toggleCollapsedSideNav } from '../appRedux/actions/Setting'
 import { NAV_STYLE_DRAWER, NAV_STYLE_FIXED, NAV_STYLE_MINI_SIDEBAR, TAB_SIZE } from '../constants/ThemeSetting'
-import LanguageMenu from './LanguageMenu'
 
 const {Header} = Layout
 
@@ -28,11 +27,6 @@ const TopBar = () => {
       <Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
         <img alt="" src={require('assets/images/w-logo.png')}/>
       </Link>
-      <ul className="gx-header-notifications gx-ml-auto">
-        <li className="gx-language">
-          <LanguageMenu/>
-        </li>
-      </ul>
     </Header>
   )
 }
