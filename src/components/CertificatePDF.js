@@ -98,7 +98,7 @@ const CertificatePDF = (props) => {
         <View style={styles.userInfoContainer}>
           <View style={styles.infoRow}>
             <Text style={styles.label}>氏 名</Text>
-            <Text style={styles.value}>{request.name}</Text>
+            <Text style={styles.value}>{`${request.lastName} ${request.firstName}`}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>アカウント</Text>

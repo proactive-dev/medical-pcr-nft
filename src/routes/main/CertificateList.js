@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, List, Modal, Spin } from 'antd'
+import { Button, Image, List, Modal, Spin } from 'antd'
 import _ from 'lodash'
 import QRCode from 'qrcode.react'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
@@ -47,7 +47,9 @@ const CertificateList = (props) => {
         result[0].forEach((id, index) => {
           _certificates.push({
             id: id.toNumber(),
-            name: ethers.utils.parseBytes32String(result[1][index]['request']['name']),
+            firstName: ethers.utils.parseBytes32String(result[1][index]['request']['user']['firstName']),
+            lastName: ethers.utils.parseBytes32String(result[1][index]['request']['user']['lastName']),
+            photo: result[1][index]['request']['user']['photo'],
             fileHash: result[1][index]['fileHash'],
             issuedAt: timestamp2Date(result[1][index]['issuedAt'].toNumber()),
             expireAt: timestamp2Date(result[1][index]['expireAt'].toNumber())
@@ -114,7 +116,8 @@ const CertificateList = (props) => {
           <span className={'gx-m-2'}>{`${intl.formatMessage({id: 'expire.date'})} ${selected.expireAt}`}</span>
           <br/>
           <div className={'gx-text-center gx-mt-4'}>
-            <h3 className={'gx-font-weight-bold gx-text-primary'}>{selected.name}</h3>
+            <h3 className={'gx-font-weight-bold gx-text-primary'}>{`${selected.lastName} ${selected.firstName}`}</h3>
+            <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(selected.photo)} alt={intl.formatMessage({id: 'image'})}/>
             <QRCode
               value={buildQR(selected)}
               size={240}

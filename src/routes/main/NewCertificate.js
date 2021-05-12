@@ -65,16 +65,18 @@ const NewCertificate = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         window.history.back()
       } else {
+        console.log(result)
         const _request = {
           account: result['account'],
-          name: ethers.utils.parseBytes32String(result['name']),
-          residence: ethers.utils.parseBytes32String(result['residence']),
-          birthDate: ethers.utils.parseBytes32String(result['birth']),
-          gender: parseInt(result['gender']),
-          phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          firstName: ethers.utils.parseBytes32String(result['user']['firstName']),
+          lastName: ethers.utils.parseBytes32String(result['user']['lastName']),
+          residence: ethers.utils.parseBytes32String(result['user']['residence']),
+          birthDate: ethers.utils.parseBytes32String(result['user']['birth']),
+          gender: parseInt(result['user']['gender']),
+          phoneNumber: ethers.utils.parseBytes32String(result['user']['phone']),
+          email: ethers.utils.parseBytes32String(result['user']['mail'])
         }
-        if (_.isEmpty(_request['name']) || _.isEmpty(_request['phoneNumber']) || _.isEmpty(_request['email'])) {
+        if (_.isEmpty(_request['firstName']) || _.isEmpty(_request['lastName']) || _.isEmpty(_request['phoneNumber']) || _.isEmpty(_request['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
           window.history.back()
         } else {
@@ -178,8 +180,11 @@ const NewCertificate = (props) => {
         <FormItem name="account" label={'ID'}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request.account || ''}</span>
         </FormItem>
-        <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.name || ''}</span>
+        <FormItem name="name" label={intl.formatMessage({id: 'name.last'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request.lastName || ''}</span>
+        </FormItem>
+        <FormItem name="name" label={intl.formatMessage({id: 'name.first'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request.firstName || ''}</span>
         </FormItem>
         <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request.residence || ''}</span>

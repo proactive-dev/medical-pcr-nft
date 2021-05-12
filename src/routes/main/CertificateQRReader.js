@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Alert, Button, Descriptions, Modal, Spin } from 'antd'
+import { Alert, Button, Descriptions, Image, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import _ from 'lodash'
 import moment from 'moment'
@@ -12,7 +12,7 @@ import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
 import { decrypt } from '../../util/crypto'
 import { ethers } from 'ethers'
-import { findGender, findResult, timestamp2Date } from '../../util/helpers'
+import { findGender, findResult, ipfsLink, timestamp2Date } from '../../util/helpers'
 
 const CertificateQRReader = (props) => {
   const dispatch = useDispatch()
@@ -20,7 +20,7 @@ const CertificateQRReader = (props) => {
   const chain = useSelector(state => state.chain)
   const {contract} = chain
   const {intl} = props
-  const [qrCodeModalOpen, setQRCodeModalOpen] = useState(false)
+  const [qrReaderVisible, setQrReaderVisible] = useState(false)
   const [certificate, setCertificate] = useState({})
   const [organization, setOrganization] = useState({})
 
@@ -32,9 +32,12 @@ const CertificateQRReader = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
       } else {
         const _cert = {
-          name: ethers.utils.parseBytes32String(result['request']['name']),
-          birthDate: ethers.utils.parseBytes32String(result['request']['birth']),
-          gender: parseInt(result['request']['gender']),
+          firstName: ethers.utils.parseBytes32String(result['request']['user']['firstName']),
+          lastName: ethers.utils.parseBytes32String(result['request']['user']['lastName']),
+          birthDate: ethers.utils.parseBytes32String(result['request']['user']['birth']),
+          gender: parseInt(result['request']['user']['gender']),
+          photo: result['request']['user']['photo'],
+          sampleId: ethers.utils.parseBytes32String(result['sampleId']),
           sample: ethers.utils.parseBytes32String(result['sample']),
           testMethod: ethers.utils.parseBytes32String(result['testMethod']),
           result: parseInt(result['result']),
@@ -77,16 +80,8 @@ const CertificateQRReader = (props) => {
     })
   }
 
-  const showQRCodeModal = () => {
-    setQRCodeModalOpen(true)
-  }
-
-  const closeQRCodeModal = e => {
-    setQRCodeModalOpen(false)
-  }
-
   const handleQrCodeScan = (value) => {
-    setQRCodeModalOpen(false)
+    setQrReaderVisible(false)
     if (!_.isEmpty(value)) {
       try {
         const _data = JSON.parse(decrypt(value))
@@ -109,7 +104,7 @@ const CertificateQRReader = (props) => {
     }
     setCertificate({})
     openNotificationWithIcon(ERROR, msg)
-    setQRCodeModalOpen(false)
+    setQrReaderVisible(false)
   }
 
   const getExpireStatus = (issuedAt) => {
@@ -126,31 +121,60 @@ const CertificateQRReader = (props) => {
     }
   }
 
-  const {name, birthDate, gender, sample, testMethod, result, resultDate, issuedAt, expireAt} = certificate
+  const {
+    firstName,
+    lastName,
+    birthDate,
+    gender,
+    photo,
+    sampleId,
+    sample,
+    testMethod,
+    result,
+    resultDate,
+    issuedAt,
+    expireAt
+  } = certificate
 
   return (
     <Spin spinning={loader}>
-      <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCodeModal}>
+      <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>}
+              onClick={() => setQrReaderVisible(true)}>
         &nbsp;<FormattedMessage id="scan.qrCode"/>
       </Button>
       {
-        !_.isEmpty(certificate) && !_.isEmpty(organization) &&
+        qrReaderVisible &&
+        <div className={'gx-text-center'}>
+          <QrReader
+            style={{height: 250, width: 250, margin: 'auto'}}
+            delay={QRREADER_TIMEOUT}
+            onScan={handleQrCodeScan}
+            onError={handleQrCodeError}
+          />
+        </div>
+      }
+      {
+        !qrReaderVisible && !_.isEmpty(certificate) && !_.isEmpty(organization) &&
         <>
           <Alert
             message={`${intl.formatMessage({id: 'issue.date'})} ${issuedAt}`}
             description={`${intl.formatMessage({id: 'expire.date'})} ${expireAt}`}
             type={getExpireStatus(issuedAt)}/>
+          <div className={'gx-text-center gx-mt-4'}>
+            <h3 className={'gx-font-weight-bold gx-text-primary'}>{`${lastName} ${firstName}`}</h3>
+            <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(photo)} alt={intl.formatMessage({id: 'image'})}/>
+          </div>
           <Descriptions
             className="gx-mt-md-4"
             layout="vertical"
             bordered
             column={{xxl: 4, xl: 4, lg: 4, md: 2, sm: 2, xs: 1}}
             size={'small'}>
-            <Descriptions.Item label={intl.formatMessage({id: 'name'})} span={2}>{name}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'birthDate'})}>{birthDate}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'gender'})}>
               {gender ? intl.formatMessage({id: `gender.${findGender(gender)}`}) : ''}
             </Descriptions.Item>
+            <Descriptions.Item label={intl.formatMessage({id: 'collection.sampleId'})}>{sampleId}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'collection.sample'})}>{sample}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'test.method'})}>{testMethod}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'test.result'})}>
@@ -162,23 +186,6 @@ const CertificateQRReader = (props) => {
             </Descriptions.Item>
           </Descriptions>
         </>
-      }
-      {
-        qrCodeModalOpen &&
-        <Modal
-          visible={true}
-          footer={null}
-          onOk={closeQRCodeModal}
-          onCancel={closeQRCodeModal}>
-          <div className={'gx-text-center'}>
-            <QrReader
-              style={{height: 250, width: 250, margin: 'auto'}}
-              delay={QRREADER_TIMEOUT}
-              onScan={handleQrCodeScan}
-              onError={handleQrCodeError}
-            />
-          </div>
-        </Modal>
       }
     </Spin>
   )

@@ -31,12 +31,13 @@ const RequestList = (props) => {
           _requests.push({
             id: id.toNumber(),
             account: result[1][index]['account'],
-            name: ethers.utils.parseBytes32String(result[1][index]['name']),
-            residence: ethers.utils.parseBytes32String(result[1][index]['residence']),
-            birthDate: ethers.utils.parseBytes32String(result[1][index]['birth']),
-            gender: parseInt(result[1][index]['gender']),
-            phoneNumber: ethers.utils.parseBytes32String(result[1][index]['phone']),
-            email: ethers.utils.parseBytes32String(result[1][index]['mail']),
+            firstName: ethers.utils.parseBytes32String(result[1][index]['user']['firstName']),
+            lastName: ethers.utils.parseBytes32String(result[1][index]['user']['lastName']),
+            residence: ethers.utils.parseBytes32String(result[1][index]['user']['residence']),
+            birthDate: ethers.utils.parseBytes32String(result[1][index]['user']['birth']),
+            gender: parseInt(result[1][index]['user']['gender']),
+            phoneNumber: ethers.utils.parseBytes32String(result[1][index]['user']['phone']),
+            email: ethers.utils.parseBytes32String(result[1][index]['user']['mail']),
             requestedAt: timestamp2Date(result[1][index]['requestedAt'].toNumber())
           })
         }
@@ -57,7 +58,7 @@ const RequestList = (props) => {
         renderItem={item =>
           <List.Item key={item.id}>
             <List.Item.Meta
-              title={item.name}
+              title={`${item.lastName} ${item.firstName}`}
               description={item.requestedAt}
             />
             <Link to={`/${CERTIFICATE}/${NEW}/${item.id}`} className="gx-pointer gx-link gx-text-underline">

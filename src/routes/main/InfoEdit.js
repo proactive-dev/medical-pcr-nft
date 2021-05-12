@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { injectIntl } from 'react-intl'
-import { DatePicker, Form, Input, Select, Spin } from 'antd'
+import { FormattedMessage, injectIntl } from 'react-intl'
+import { DatePicker, Form, Input, Select, Spin, Upload } from 'antd'
+import { PictureOutlined } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
@@ -11,6 +12,7 @@ import { COMMON_DATE_FORMAT, ERROR, GENDER, SUCCESS, TYPE_ORGANIZATION } from '.
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
+import { uploadIPFS } from '../../util/helpers'
 
 const FormItem = Form.Item
 const {Option} = Select
@@ -21,7 +23,7 @@ const InfoEdit = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {address, contract} = chain
+  const {address, contract, ipfs} = chain
   const {intl, history, location, match} = props
 
   useEffect(() => {
@@ -36,22 +38,30 @@ const InfoEdit = (props) => {
 
   const saveUser = async (values) => {
     dispatch(showLoader())
-    contract.setPerson(
-      address,
-      ethers.utils.formatBytes32String(values.name),
-      ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
-      values.gender,
-      ethers.utils.formatBytes32String(values.residence),
-      ethers.utils.formatBytes32String(values.phoneNumber),
-      ethers.utils.formatBytes32String(values.email)
-    ).then((result) => {
+    const photoHash = await uploadIPFS({ipfs, file: values.images[0]})
+    if (photoHash) {
+      contract.setPerson(
+        address,
+        ethers.utils.formatBytes32String(values.firstName),
+        ethers.utils.formatBytes32String(values.lastName),
+        ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
+        values.gender,
+        ethers.utils.formatBytes32String(values.residence),
+        ethers.utils.formatBytes32String(values.phoneNumber),
+        ethers.utils.formatBytes32String(values.email),
+        photoHash
+      ).then((result) => {
+        dispatch(hideLoader())
+        openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.user'}))
+        history.push('/')
+      }).catch((error) => {
+        dispatch(hideLoader())
+        openNotificationWithIcon(ERROR, error.message)
+      })
+    } else {
       dispatch(hideLoader())
-      openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.user'}))
-      history.push('/')
-    }).catch((error) => {
-      dispatch(hideLoader())
-      openNotificationWithIcon(ERROR, error.message)
-    })
+      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.fail2UploadIPFS'}))
+    }
   }
 
   const saveOrganization = (values) => {
@@ -73,6 +83,20 @@ const InfoEdit = (props) => {
     })
   }
 
+  const normalizeFile = (e) => {
+    if (e && e.file) {
+      return [e.file]
+    }
+    if (e && e.fileList) {
+      if (e.fileList.length > 1) {
+        return e.fileList.shift()
+      } else {
+        return e.fileList[0]
+      }
+    }
+    return []
+  }
+
   const getUserForm = () => {
     return (
       <Form
@@ -81,8 +105,16 @@ const InfoEdit = (props) => {
         ref={formRef}
         onFinish={saveUser}>
         <FormItem
-          name="name"
-          label={intl.formatMessage({id: 'name'})}
+          name="lastName"
+          label={intl.formatMessage({id: 'name.last'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
+        <FormItem
+          name="firstName"
+          label={intl.formatMessage({id: 'name.first'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
@@ -136,6 +168,27 @@ const InfoEdit = (props) => {
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
+        <FormItem
+          name="images"
+          label={intl.formatMessage({id: 'image'})}
+          valuePropName="fileList"
+          getValueFromEvent={normalizeFile}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Upload.Dragger
+            beforeUpload={() => {
+              return false
+            }}
+            listType={'picture'}
+            maxCount={1}>
+            <p className="ant-upload-drag-icon">
+              <PictureOutlined/>
+            </p>
+            <p className="ant-upload-text"><FormattedMessage id={'upload.image.text'}/></p>
+            <p className="ant-upload-hint"><FormattedMessage id={'upload.image.hint'}/></p>
+          </Upload.Dragger>
         </FormItem>
       </Form>
     )

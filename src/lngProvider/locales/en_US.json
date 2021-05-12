@@ -89,6 +89,8 @@
   "load.account": "Load Account",
   "mint": "Mint",
   "name": "Name",
+  "name.first": "First Name",
+  "name.last": "Last Name",
   "no.data": "No Data",
   "ok": "Ok",
   "organization": "Organization",

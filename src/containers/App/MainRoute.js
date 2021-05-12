@@ -22,7 +22,6 @@ import RequestEdit from '../../routes/main/RequestEdit'
 import RequestList from '../../routes/main/RequestList'
 import NewCertificate from '../../routes/main/NewCertificate'
 import CertificateList from '../../routes/main/CertificateList'
-import CertificateView from '../../routes/main/CertificateView'
 import CertificateQRReader from '../../routes/main/CertificateQRReader'
 
 const MainRoute = (props) => {
@@ -50,8 +49,6 @@ const MainRoute = (props) => {
              component={CertificateList}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${NEW}/:id`}
              component={NewCertificate}/>
-      <Route exact path={`${match.url}${CERTIFICATE}/${VIEW}/:id`}
-             component={CertificateView}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${SCAN}`}
              component={CertificateQRReader}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${LIST}`}

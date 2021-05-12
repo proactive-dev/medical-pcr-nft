@@ -30,13 +30,7 @@ const RequestEdit = (props) => {
   const saveTestRequest = async (values) => {
     dispatch(showLoader())
     contract.newTestRequest(
-      values.account,
-      ethers.utils.formatBytes32String(values.name),
-      ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
-      values.gender,
-      ethers.utils.formatBytes32String(values.residence),
-      ethers.utils.formatBytes32String(values.phoneNumber),
-      ethers.utils.formatBytes32String(values.email)
+      values.account
     ).then((result) => {
       dispatch(hideLoader())
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.request'}))
@@ -56,14 +50,15 @@ const RequestEdit = (props) => {
       } else {
         const _info = {
           account: address,
-          name: ethers.utils.parseBytes32String(result['name']),
+          firstName: ethers.utils.parseBytes32String(result['firstName']),
+          lastName: ethers.utils.parseBytes32String(result['lastName']),
           residence: ethers.utils.parseBytes32String(result['residence']),
           birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }
-        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
+        if (_.isEmpty(_info['firstName']) || _.isEmpty(_info['lastName']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         } else {
           if (_info.birthDate) {
@@ -128,8 +123,16 @@ const RequestEdit = (props) => {
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
         </FormItem>
         <FormItem
-          name="name"
-          label={intl.formatMessage({id: 'name'})}
+          name="lastName"
+          label={intl.formatMessage({id: 'name.last'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
+        <FormItem
+          name="firstName"
+          label={intl.formatMessage({id: 'name.first'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>

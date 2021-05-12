@@ -36,14 +36,15 @@ const UserView = (props) => {
         window.history.back()
       } else {
         const _info = {
-          name: ethers.utils.parseBytes32String(result['name']),
+          firstName: ethers.utils.parseBytes32String(result['firstName']),
+          lastName: ethers.utils.parseBytes32String(result['lastName']),
           residence: ethers.utils.parseBytes32String(result['residence']),
           birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }
-        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
+        if (_.isEmpty(_info['firstName']) || _.isEmpty(_info['lastName']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
           window.history.back()
         } else {
@@ -72,7 +73,7 @@ const UserView = (props) => {
     setQRCodeVisible(false)
   }
 
-  const {name, residence, birthDate, gender, phoneNumber, email} = info
+  const {firstName, lastName, residence, birthDate, gender, phoneNumber, email} = info
   let genderStr = ''
   if (_.isNumber(gender)) {
     genderStr = intl.formatMessage({id: `gender.${findGender(gender)}`})
@@ -86,8 +87,11 @@ const UserView = (props) => {
       <Form
         name="user-form"
         layout={'vertical'}>
-        <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{name || ''}</span>
+        <FormItem name="lastName" label={intl.formatMessage({id: 'name.last'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{lastName || ''}</span>
+        </FormItem>
+        <FormItem name="firstName" label={intl.formatMessage({id: 'name.first'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{firstName || ''}</span>
         </FormItem>
         <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{residence || ''}</span>
