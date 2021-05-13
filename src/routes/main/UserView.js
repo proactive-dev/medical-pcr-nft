@@ -87,11 +87,8 @@ const UserView = (props) => {
       <Form
         name="user-form"
         layout={'vertical'}>
-        <FormItem name="lastName" label={intl.formatMessage({id: 'name.last'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{lastName || ''}</span>
-        </FormItem>
-        <FormItem name="firstName" label={intl.formatMessage({id: 'name.first'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{firstName || ''}</span>
+        <FormItem name="lastName" label={intl.formatMessage({id: 'name'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{lastName || ''} {firstName || ''}</span>
         </FormItem>
         <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{residence || ''}</span>

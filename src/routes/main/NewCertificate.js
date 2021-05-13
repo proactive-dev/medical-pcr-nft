@@ -65,7 +65,6 @@ const NewCertificate = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         window.history.back()
       } else {
-        console.log(result)
         const _request = {
           account: result['account'],
           firstName: ethers.utils.parseBytes32String(result['user']['firstName']),
@@ -180,11 +179,8 @@ const NewCertificate = (props) => {
         <FormItem name="account" label={'ID'}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request.account || ''}</span>
         </FormItem>
-        <FormItem name="name" label={intl.formatMessage({id: 'name.last'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.lastName || ''}</span>
-        </FormItem>
-        <FormItem name="name" label={intl.formatMessage({id: 'name.first'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.firstName || ''}</span>
+        <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request.lastName || ''} {request.firstName || ''}</span>
         </FormItem>
         <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request.residence || ''}</span>
