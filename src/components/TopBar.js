@@ -25,7 +25,7 @@ const TopBar = () => {
           null
       }
       <Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
-        <img alt="" src={require('assets/images/w-logo.png')}/>
+        <img alt="" src={require('assets/images/w-logo.svg')}/>
       </Link>
     </Header>
   )
