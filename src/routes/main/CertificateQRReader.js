@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Descriptions, Image, Spin } from 'antd'
+import { Alert, Button, Descriptions, Image, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import _ from 'lodash'
 import moment from 'moment'
@@ -148,17 +148,18 @@ const CertificateQRReader = (props) => {
       {
         !qrReaderVisible && !_.isEmpty(certificate) && !_.isEmpty(organization) &&
         <>
-          <div className={'gx-mt-4'}>
-            <h4>{`${intl.formatMessage({id: 'issue.date'})} ${issuedAt}`}</h4>
-            <span>{`${intl.formatMessage({id: 'expire.date'})} ${expireAt}`}</span>
-          </div>
+          <Alert
+            className={`gx-cert-description-${getExpireStatus(issuedAt)}`}
+            message={`${intl.formatMessage({id: 'issue.date'})} ${issuedAt}`}
+            description={`${intl.formatMessage({id: 'expire.date'})} ${expireAt}`}
+            type={getExpireStatus(issuedAt)}/>
           <div className={'gx-text-center gx-mt-4'}>
             <h3 className={'gx-font-weight-bold gx-text-primary'}>{`${lastName} ${firstName}`}</h3>
             <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(photo)} alt={intl.formatMessage({id: 'image'})}/>
           </div>
           <Descriptions
             bordered
-            className={`gx-mt-md-4 ant-alert-${getExpireStatus(issuedAt)}`}
+            className={`gx-mt-md-4 gx-cert-description-${getExpireStatus(issuedAt)} ant-alert-${getExpireStatus(issuedAt)}`}
             column={{xxl: 4, xl: 4, lg: 4, md: 2, sm: 2, xs: 1}}
             labelStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
             contentStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
