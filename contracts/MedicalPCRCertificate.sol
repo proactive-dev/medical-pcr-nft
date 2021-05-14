@@ -64,6 +64,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
 
     mapping (uint256 => Certificate) public certificates;
     uint256[] certificateIds;
+    mapping (address => uint256[]) public certificateIdsPerOrganization;
 
     event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail, string photo);
     event SetOrganization(address who, bytes32 name, bytes32 representative, bytes32 streetAddress, bytes32 phone, bytes32 mail);
@@ -195,6 +196,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
             expireAt: block.timestamp + 15 * 1 days
         });
         certificateIds.push(_requestId);
+        certificateIdsPerOrganization[_organizationAccount].push(_requestId);
 
         _mint(_who, _requestId);
         _setTokenURI(_requestId, _fileHash);
@@ -210,6 +212,18 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
             uint256 _id = tokenOfOwnerByIndex(_who, i);
             _ids[i] = _id;
             _certificates[i] = certificates[_id];
+        }
+        return (_ids, _certificates);
+    }
+
+    function getAllCertificatesByOrganization(address _who) public view returns (uint256[] memory, Certificate[] memory){
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender) || hasRole(ISSUER_ROLE, msg.sender) || (msg.sender == _who), "Only owner, organization can access all certificates.");
+
+        uint256[] memory _ids = certificateIdsPerOrganization[_who];
+        uint256 _certificatesCount = _ids.length;
+        Certificate[] memory _certificates = new Certificate[](_certificatesCount);
+        for (uint i = 0; i < _certificatesCount; i++) {
+            _certificates[i] = certificates[_ids[i]];
         }
         return (_ids, _certificates);
     }

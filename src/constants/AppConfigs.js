@@ -33,8 +33,6 @@ export const CERTIFICATE = 'certificate'
 export const REQUEST = 'request'
 export const TYPE_USER = 'user'
 export const TYPE_ORGANIZATION = 'organization'
-export const FILTER_ME = 'me'
-export const FILTER_ALL = 'all'
 
 export const GENDER = [
   {
@@ -64,7 +62,7 @@ export const USER_MENUS = [
     title: 'view.me'
   },
   {
-    path: `${CERTIFICATE}/${LIST}/${FILTER_ME}`,
+    path: `${CERTIFICATE}/${LIST}`,
     title: 'view.my.cert'
   },
   {
@@ -94,7 +92,7 @@ export const ISSUER_MENUS = [
     title: 'issue.certificate.title'
   },
   {
-    path: `${CERTIFICATE}/${LIST}/${FILTER_ALL}`,
+    path: `${CERTIFICATE}/${LIST}`,
     title: 'view.all.cert'
   }
 ]

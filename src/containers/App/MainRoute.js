@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl'
 import {
   CERTIFICATE,
   EDIT,
-  FILTER_ME,
   LIST,
   NEW,
   REQUEST,
@@ -35,7 +34,7 @@ const MainRoute = (props) => {
     } else if (isIssuer) {
       return `/${REQUEST}/${LIST}`
     } else {
-      return `/${CERTIFICATE}/${LIST}/${FILTER_ME}`
+      return `/${CERTIFICATE}/${LIST}`
     }
   }
 
@@ -45,7 +44,7 @@ const MainRoute = (props) => {
              component={InfoEdit}/>
       <Route exact path={`${match.url}${TYPE_USER}/${VIEW}`}
              component={UserView}/>
-      <Route exact path={`${match.url}${CERTIFICATE}/${LIST}/:filter`}
+      <Route exact path={`${match.url}${CERTIFICATE}/${LIST}`}
              component={CertificateList}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${NEW}/:id`}
              component={NewCertificate}/>
