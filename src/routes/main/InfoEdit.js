@@ -46,7 +46,7 @@ const InfoEdit = (props) => {
         ethers.utils.formatBytes32String(values.lastName),
         ethers.utils.formatBytes32String(values.birthDate.format(COMMON_DATE_FORMAT)),
         values.gender,
-        ethers.utils.formatBytes32String(values.residence),
+        [...ethers.utils.toUtf8Bytes(values.residence)],
         ethers.utils.formatBytes32String(values.phoneNumber),
         ethers.utils.formatBytes32String(values.email),
         photoHash
@@ -70,7 +70,7 @@ const InfoEdit = (props) => {
       values.account,
       ethers.utils.formatBytes32String(values.name),
       ethers.utils.formatBytes32String(values.delegateName),
-      ethers.utils.formatBytes32String(values.residence),
+      [...ethers.utils.toUtf8Bytes(values.residence)],
       ethers.utils.formatBytes32String(values.phoneNumber),
       ethers.utils.formatBytes32String(values.email)
     ).then((result) => {

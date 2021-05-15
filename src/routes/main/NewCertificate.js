@@ -10,7 +10,7 @@ import { COMMON_DATE_FORMAT, ERROR, SUCCESS, TEST_RESULT } from '../../constants
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { findGender, uploadIPFS } from '../../util/helpers'
+import { bigNumberArrayToString, findGender, uploadIPFS } from '../../util/helpers'
 import CertificatePDF from '../../components/CertificatePDF'
 import SourceHanSansJPExtraLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-ExtraLight.ttf'
 import SourceHanSansJPLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Light.ttf'
@@ -69,7 +69,7 @@ const NewCertificate = (props) => {
           account: result['account'],
           firstName: ethers.utils.parseBytes32String(result['user']['firstName']),
           lastName: ethers.utils.parseBytes32String(result['user']['lastName']),
-          residence: ethers.utils.parseBytes32String(result['user']['residence']),
+          residence: bigNumberArrayToString(result['user']['residence']),
           birthDate: ethers.utils.parseBytes32String(result['user']['birth']),
           gender: parseInt(result['user']['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['user']['phone']),
@@ -100,7 +100,7 @@ const NewCertificate = (props) => {
         const _organization = {
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
-          residence: ethers.utils.parseBytes32String(result['streetAddress']),
+          residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }

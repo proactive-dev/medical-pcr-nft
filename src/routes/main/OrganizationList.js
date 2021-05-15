@@ -7,6 +7,7 @@ import { ethers } from 'ethers'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { ERROR, TYPE_ORGANIZATION, VIEW } from '../../constants/AppConfigs'
+import { bigNumberArrayToString } from '../../util/helpers'
 
 const OrganizationList = (props) => {
   const dispatch = useDispatch()
@@ -29,7 +30,7 @@ const OrganizationList = (props) => {
         _organizations.push({
           account: account,
           name: ethers.utils.parseBytes32String(result[1][index]['name']),
-          streetAddress: ethers.utils.parseBytes32String(result[1][index]['streetAddress']),
+          streetAddress: bigNumberArrayToString(result[1][index]['streetAddress']),
           phone: ethers.utils.parseBytes32String(result[1][index]['phone']),
           mail: ethers.utils.parseBytes32String(result[1][index]['mail']),
           representative: ethers.utils.parseBytes32String(result[1][index]['representative'])

@@ -143,3 +143,8 @@ export const dataURItoU8Array = (dataURI) => {
 export function numberFormat(inputNumber) {
   return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
+
+export const bigNumberArrayToString = (bigNumberArray) => {
+  let _numArr = bigNumberArray.map(_char => _char.toNumber())
+  return new TextDecoder().decode(Uint8Array.from(_numArr))
+}

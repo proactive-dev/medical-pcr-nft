@@ -17,7 +17,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         bytes32 lastName;
         bytes32 birth;
         Gender gender;
-        bytes32 residence;
+        uint[] residence;
         bytes32 phone;
         bytes32 mail;
         string photo;
@@ -26,7 +26,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     struct Organization {
         bytes32 name;
         bytes32 representative;
-        bytes32 streetAddress;
+        uint[] streetAddress;
         bytes32 phone;
         bytes32 mail;
     }
@@ -66,8 +66,8 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
     uint256[] certificateIds;
     mapping (address => uint256[]) public certificateIdsPerOrganization;
 
-    event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, bytes32 residence, bytes32 phone, bytes32 mail, string photo);
-    event SetOrganization(address who, bytes32 name, bytes32 representative, bytes32 streetAddress, bytes32 phone, bytes32 mail);
+    event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, uint[] residence, bytes32 phone, bytes32 mail, string photo);
+    event SetOrganization(address who, bytes32 name, bytes32 representative, uint[] streetAddress, bytes32 phone, bytes32 mail);
     event NewTestRequest(uint256 id, address who, uint256 requestedAt);
 
     constructor()
@@ -78,7 +78,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         )
     {}
 
-    function setPerson(address _who, bytes32 _firstName, bytes32 _lastName, bytes32 _birth, Gender _gender, bytes32 _residence, bytes32 _phone, bytes32 _mail, string memory _photo) public {
+    function setPerson(address _who, bytes32 _firstName, bytes32 _lastName, bytes32 _birth, Gender _gender, uint[] memory _residence, bytes32 _phone, bytes32 _mail, string memory _photo) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can set organization data.");
 
         people[_who].firstName = _firstName;
@@ -93,7 +93,7 @@ contract MedicalPCRCertificate is ERC721PresetMinterPauserAutoId {
         emit SetPerson(_who, _firstName, _lastName, _birth, _gender, _residence, _phone, _mail, _photo);
     }
 
-    function setOrganization(address _who, bytes32 _name, bytes32 _representative, bytes32 _streetAddress, bytes32 _phone, bytes32 _mail) public {
+    function setOrganization(address _who, bytes32 _name, bytes32 _representative, uint[] memory _streetAddress, bytes32 _phone, bytes32 _mail) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can set organization data.");
 
         if (organizations[_who].name == "" ) {

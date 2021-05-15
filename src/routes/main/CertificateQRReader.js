@@ -12,7 +12,7 @@ import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
 import { decrypt } from '../../util/crypto'
 import { ethers } from 'ethers'
-import { findResult, ipfsLink, timestamp2Date } from '../../util/helpers'
+import { bigNumberArrayToString, findResult, ipfsLink, timestamp2Date } from '../../util/helpers'
 
 const CertificateQRReader = (props) => {
   const dispatch = useDispatch()
@@ -60,7 +60,7 @@ const CertificateQRReader = (props) => {
         const _info = {
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
-          residence: ethers.utils.parseBytes32String(result['streetAddress']),
+          residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }

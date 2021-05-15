@@ -13,6 +13,7 @@ import { COMMON_DATE_FORMAT, ERROR, GENDER, QRREADER_TIMEOUT, SUCCESS } from '..
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
+import { bigNumberArrayToString } from '../../util/helpers'
 
 const FormItem = Form.Item
 const {Option} = Select
@@ -52,7 +53,7 @@ const RequestEdit = (props) => {
           account: address,
           firstName: ethers.utils.parseBytes32String(result['firstName']),
           lastName: ethers.utils.parseBytes32String(result['lastName']),
-          residence: ethers.utils.parseBytes32String(result['residence']),
+          residence: bigNumberArrayToString(result['residence']),
           birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),

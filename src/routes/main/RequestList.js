@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { CERTIFICATE, ERROR, NEW } from '../../constants/AppConfigs'
-import { timestamp2Date } from '../../util/helpers'
+import { bigNumberArrayToString, timestamp2Date } from '../../util/helpers'
 
 const RequestList = (props) => {
   const dispatch = useDispatch()
@@ -33,7 +33,7 @@ const RequestList = (props) => {
             account: result[1][index]['account'],
             firstName: ethers.utils.parseBytes32String(result[1][index]['user']['firstName']),
             lastName: ethers.utils.parseBytes32String(result[1][index]['user']['lastName']),
-            residence: ethers.utils.parseBytes32String(result[1][index]['user']['residence']),
+            residence: bigNumberArrayToString(result[1][index]['user']['residence']),
             birthDate: ethers.utils.parseBytes32String(result[1][index]['user']['birth']),
             gender: parseInt(result[1][index]['user']['gender']),
             phoneNumber: ethers.utils.parseBytes32String(result[1][index]['user']['phone']),

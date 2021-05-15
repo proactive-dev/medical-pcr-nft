@@ -9,6 +9,7 @@ import { EditFilled } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { EDIT, ERROR, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
+import { bigNumberArrayToString } from '../../util/helpers'
 
 const FormItem = Form.Item
 
@@ -43,7 +44,7 @@ const OrganizationView = (props) => {
           account,
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
-          residence: ethers.utils.parseBytes32String(result['streetAddress']),
+          residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
           email: ethers.utils.parseBytes32String(result['mail'])
         }

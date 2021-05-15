@@ -9,7 +9,7 @@ import QRCode from 'qrcode.react'
 import { EditFilled, QrcodeOutlined } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { EDIT, ERROR, TYPE_USER } from '../../constants/AppConfigs'
-import { findGender } from '../../util/helpers'
+import { bigNumberArrayToString, findGender } from '../../util/helpers'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 
 const FormItem = Form.Item
@@ -38,7 +38,7 @@ const UserView = (props) => {
         const _info = {
           firstName: ethers.utils.parseBytes32String(result['firstName']),
           lastName: ethers.utils.parseBytes32String(result['lastName']),
-          residence: ethers.utils.parseBytes32String(result['residence']),
+          residence: bigNumberArrayToString(result['residence']),
           birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
