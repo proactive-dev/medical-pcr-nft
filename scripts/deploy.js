@@ -77,8 +77,8 @@ async function main() {
 
   const diamondCut = []
   for (const [name, deployedFacet] of facets) {
-    console.log(`----- ${name} -----`)
-    console.log(getSignatures(deployedFacet))
+    // console.log(`----- ${name} -----`)
+    // console.log(getSignatures(deployedFacet))
     diamondCut.push([
       deployedFacet.address,
       FacetCutAction.Add,

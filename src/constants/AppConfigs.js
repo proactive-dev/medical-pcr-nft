@@ -21,8 +21,8 @@ export const DEFAULT_PRECISION = 2
 export const DEFAULT_DECIMALS = 18
 
 export const RPC_PROVIDER = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_RPC_PROVIDER_PROD : process.env.REACT_APP_RPC_PROVIDER_LOCAL
-export const CONTRACT_ADDRESS = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_CONTRACT_ADDRESS_PROD : process.env.REACT_APP_CONTRACT_ADDRESS_LOCAL
 export const CONTRACT_OWNER_KEY = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PRIV_KEY_PROD : process.env.REACT_APP_PRIV_KEY_LOCAL
+export const CONTRACT_ADDRESS = process.env.NODE_ENV === process.env.REACT_APP_CONTRACT_ADDRESS
 
 export const NEW = 'new'
 export const EDIT = 'edit'
