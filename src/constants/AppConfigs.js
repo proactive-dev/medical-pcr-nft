@@ -44,6 +44,15 @@ export const GENDER = [
   }
 ]
 
+export const ROLE = [
+  {
+    key: 'issuer', value: 0
+  },
+  {
+    key: 'business', value: 1
+  }
+]
+
 export const TEST_RESULT = [
   {
     key: 'negative', value: 0

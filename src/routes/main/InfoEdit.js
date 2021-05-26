@@ -8,7 +8,7 @@ import { ethers } from 'ethers'
 import _ from 'lodash'
 import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
-import { COMMON_DATE_FORMAT, ERROR, GENDER, SUCCESS, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
+import { COMMON_DATE_FORMAT, ERROR, GENDER, ROLE, SUCCESS, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
@@ -67,6 +67,7 @@ const InfoEdit = (props) => {
   const saveOrganization = (values) => {
     dispatch(showLoader())
     contract.setOrganization(
+      values.role,
       values.account,
       ethers.utils.formatBytes32String(values.name),
       ethers.utils.formatBytes32String(values.delegateName),
@@ -212,6 +213,22 @@ const InfoEdit = (props) => {
             }
           ]}>
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
+        <FormItem
+          name="role"
+          label={intl.formatMessage({id: 'role'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Select className="gx-mt-1 gx-mb-1" allowClear>
+            {
+              ROLE.map(role =>
+                <Option value={role.value} key={role.key}>
+                  {intl.formatMessage({id: `role.${role.key}`})}
+                </Option>
+              )
+            }
+          </Select>
         </FormItem>
         <FormItem
           name="name"

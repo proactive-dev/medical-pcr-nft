@@ -9,7 +9,7 @@ import { EditFilled } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { EDIT, ERROR, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { bigNumberArrayToString } from '../../util/helpers'
+import { bigNumberArrayToString, findRole } from '../../util/helpers'
 
 const FormItem = Form.Item
 
@@ -41,6 +41,7 @@ const OrganizationView = (props) => {
         window.history.back()
       } else {
         const _info = {
+          role: result['role'],
           account,
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
@@ -69,7 +70,12 @@ const OrganizationView = (props) => {
     })
   }
 
-  const {name, delegateName, residence, phoneNumber, email} = info
+  const {role, name, delegateName, residence, phoneNumber, email} = info
+  let roleStr = ''
+  if (_.isNumber(role)) {
+    roleStr = intl.formatMessage({id: `role.${findRole(role)}`})
+  }
+
 
   return (
     <Spin spinning={loader}>
@@ -78,6 +84,9 @@ const OrganizationView = (props) => {
         layout={'vertical'}>
         <FormItem name="account" label={'ID'}>
           <span className="ant-input gx-mt-1 gx-mb-1">{account || ''}</span>
+        </FormItem>
+        <FormItem name="role" label={intl.formatMessage({id: 'role'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{roleStr || ''}</span>
         </FormItem>
         <FormItem name="name" label={intl.formatMessage({id: 'organization.name'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{name || ''}</span>
