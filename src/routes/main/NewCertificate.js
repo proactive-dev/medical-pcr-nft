@@ -28,7 +28,7 @@ const NewCertificate = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {address, contract, ipfs} = chain
+  const {address, contract, certContract, ipfs} = chain
   const {intl, match, history} = props
   const [requestId, setRequestId] = useState(null)
   const [request, setRequest] = useState({})
@@ -142,7 +142,7 @@ const NewCertificate = (props) => {
 
   const mintRequest = async (values, fileHash) => {
     dispatch(showLoader())
-    contract.mintCertificate(
+    certContract.mintCertificate(
       Number(requestId),
       address,
       ethers.utils.formatBytes32String(values.sampleId),

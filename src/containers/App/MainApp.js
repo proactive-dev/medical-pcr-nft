@@ -6,8 +6,9 @@ import { isMobile } from 'react-device-detect'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import {
-  CONTRACT_ADDRESS,
+  CONTRACT_CERT_ADDRESS,
   CONTRACT_OWNER_KEY,
+  CONTRACT_STORAGE_ADDRESS,
   COPYRIGHT_COMPANY,
   ERROR,
   RPC_PROVIDER,
@@ -15,7 +16,8 @@ import {
 } from '../../constants/AppConfigs'
 import { NAV_STYLE_DRAWER, NAV_STYLE_FIXED, NAV_STYLE_MINI_SIDEBAR, TAB_SIZE } from '../../constants/ThemeSetting'
 import { decrypt, encrypt } from '../../util/crypto'
-import MedicalPCRCertificate from '../../artifacts/contracts/MedicalPCRCertificate.sol/MedicalPCRCertificate.json'
+import PCRStorage from '../../artifacts/contracts/PCRStorage.sol/PCRStorage.json'
+import PCRCertificate from '../../artifacts/contracts/PCRCertificate.sol/PCRCertificate.json'
 import Sidebar from '../Sidebar/index'
 import TopBar from '../../components/TopBar'
 import { openNotificationWithIcon } from '../../components/Messages'
@@ -80,13 +82,15 @@ const MainApp = (props) => {
 
   const setWallet = async (wallet) => {
     // Setup contract
-    const owner = new ethers.Wallet(CONTRACT_OWNER_KEY)
+    let owner = new ethers.Wallet(CONTRACT_OWNER_KEY)
     const provider = new ethers.providers.JsonRpcProvider(RPC_PROVIDER)
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, MedicalPCRCertificate.abi, owner.connect(provider))
+    owner = owner.connect(provider)
+    const certContract = new ethers.Contract(CONTRACT_CERT_ADDRESS, PCRCertificate.abi, owner)
+    const contract = new ethers.Contract(CONTRACT_STORAGE_ADDRESS, PCRStorage.abi, owner)
     // Get user address
     const address = await wallet.getAddress()
 
-    dispatch(setContract({contract, address}))
+    dispatch(setContract({contract, certContract, address}))
     getRoles({contract, address})
   }
 

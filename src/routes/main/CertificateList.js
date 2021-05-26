@@ -16,7 +16,7 @@ const CertificateList = (props) => {
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
   const {intl} = props
-  const {address, contract, roles} = chain
+  const {address, contract, certContract, roles} = chain
   const {isAdmin, isIssuer} = roles
   const [certificates, setCertificates] = useState([])
   const [selected, setSelected] = useState(null)
@@ -68,7 +68,7 @@ const CertificateList = (props) => {
         openNotificationWithIcon(ERROR, error.message)
       })
     } else {
-      contract.getCertificates(address).then((result) => {
+      certContract.getCertificates(address).then((result) => {
         dispatch(hideLoader())
         let _certificates = []
         result[0].forEach((id, index) => {
