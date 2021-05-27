@@ -51,7 +51,7 @@ const CertificateList = (props) => {
         openNotificationWithIcon(ERROR, error.message)
       })
     } else if (isIssuer) {
-      contract.getAllCertificatesByOrganization(address).then((result) => {
+      contract.getAllCertificatesByIssuer(address).then((result) => {
         dispatch(hideLoader())
         let _certificates = []
         result[0].forEach((id, index) => {

@@ -9,8 +9,10 @@ import { Font, pdf } from '@react-pdf/renderer'
 import { COMMON_DATE_FORMAT, ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
+import UserViewForm from '../../components/UserViewForm'
+import OrganizationViewForm from '../../components/OrganizationViewForm'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { bigNumberArrayToString, findGender, uploadIPFS } from '../../util/helpers'
+import { bigNumberArrayToString, uploadIPFS } from '../../util/helpers'
 import CertificatePDF from '../../components/CertificatePDF'
 import SourceHanSansJPExtraLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-ExtraLight.ttf'
 import SourceHanSansJPLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Light.ttf'
@@ -66,7 +68,7 @@ const NewCertificate = (props) => {
         window.history.back()
       } else {
         const _request = {
-          account: result['account'],
+          account: result['userAccount'],
           firstName: ethers.utils.parseBytes32String(result['user']['firstName']),
           lastName: ethers.utils.parseBytes32String(result['user']['lastName']),
           residence: bigNumberArrayToString(result['user']['residence']),
@@ -119,6 +121,11 @@ const NewCertificate = (props) => {
   }
 
   const submit = async (values) => {
+    if (values.testResult !== 0) { // Negative Result only
+      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.positiveResult'}))
+      return
+    }
+
     // Export to PDF
     const file = await pdf(
       <CertificatePDF
@@ -144,7 +151,6 @@ const NewCertificate = (props) => {
     dispatch(showLoader())
     certContract.mintCertificate(
       Number(requestId),
-      address,
       ethers.utils.formatBytes32String(values.sampleId),
       ethers.utils.formatBytes32String(values.sample),
       ethers.utils.formatBytes32String(values.collectionMethod),
@@ -163,41 +169,16 @@ const NewCertificate = (props) => {
     })
   }
 
-  let genderStr = ''
-  if (_.isNumber(request.gender)) {
-    genderStr = intl.formatMessage({id: `gender.${findGender(request.gender)}`})
-  }
-
   return (
     <Spin spinning={loader}>
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.user"/></h3>
       </Divider>
-      <Form
-        name="user-form"
-        layout={'vertical'}>
-        <FormItem name="account" label={'ID'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.account || ''}</span>
-        </FormItem>
-        <FormItem name="name" label={intl.formatMessage({id: 'name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.lastName || ''} {request.firstName || ''}</span>
-        </FormItem>
-        <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.residence || ''}</span>
-        </FormItem>
-        <FormItem name="birthDate" label={intl.formatMessage({id: 'birthDate'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.birthDate || ''}</span>
-        </FormItem>
-        <FormItem name="gender" label={intl.formatMessage({id: 'gender'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{genderStr}</span>
-        </FormItem>
-        <FormItem name="phoneNumber" label={intl.formatMessage({id: 'phoneNumber'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.phoneNumber || ''}</span>
-        </FormItem>
-        <FormItem name="email" label={'Email'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request.email || ''}</span>
-        </FormItem>
-      </Form>
+      <UserViewForm
+        intl={intl}
+        info={request}
+        showId={true}
+      />
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.test"/></h3>
       </Divider>
@@ -274,25 +255,10 @@ const NewCertificate = (props) => {
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.issuer"/></h3>
       </Divider>
-      <Form
-        name="organization-form"
-        layout={'vertical'}>
-        <FormItem name="name" label={intl.formatMessage({id: 'organization.name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{organization.name || ''}</span>
-        </FormItem>
-        <FormItem name="delegateName" label={intl.formatMessage({id: 'organization.delegate'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{organization.delegateName || ''}</span>
-        </FormItem>
-        <FormItem name="residence" label={intl.formatMessage({id: 'organization.address'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{organization.residence || ''}</span>
-        </FormItem>
-        <FormItem name="phoneNumber" label={intl.formatMessage({id: 'phoneNumber'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{organization.phoneNumber || ''}</span>
-        </FormItem>
-        <FormItem name="email" label={'Email'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{organization.email || ''}</span>
-        </FormItem>
-      </Form>
+      <OrganizationViewForm
+        intl={intl}
+        info={organization}
+      />
       <ConfirmButton intl={intl} form={formRef} btnTitle={'mint'} confirmEnabled={false}/>
     </Spin>
   )

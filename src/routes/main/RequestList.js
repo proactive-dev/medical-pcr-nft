@@ -14,7 +14,7 @@ const RequestList = (props) => {
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
   const {intl} = props
-  const {contract} = chain
+  const {address, contract} = chain
   const [requests, setRequests] = useState([])
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const RequestList = (props) => {
 
   const fetchData = () => {
     dispatch(showLoader())
-    contract.getTestRequests().then((result) => {
+    contract.getTestRequestsByIssuer(address).then((result) => {
       dispatch(hideLoader())
       let _requests = []
       result[0].forEach((id, index) => {

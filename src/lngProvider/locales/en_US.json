@@ -17,6 +17,7 @@
   "alert.invalidData": "Invalid data",
   "alert.invalidEmail": "Invalid email",
   "alert.link.expired": "This link is expired.",
+  "alert.positiveResult": "Test Result should be negative.",
   "alert.qrCodeError": "QRCode Scan Error",
   "alert.success.user": "User saved successfully.",
   "alert.success.organization": "Organization saved successfully.",
