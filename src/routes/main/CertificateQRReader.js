@@ -38,11 +38,12 @@ const CertificateQRReader = (props) => {
           sampleId: ethers.utils.parseBytes32String(result['sampleId']),
           result: parseInt(result['result']),
           resultDate: ethers.utils.parseBytes32String(result['resultDate']),
+          collectionDate: ethers.utils.parseBytes32String(result['collectionDate']),
           issuedAt: timestamp2Date(result['issuedAt'].toNumber()),
           expireAt: timestamp2Date(result['expireAt'].toNumber())
         }
         setCertificate(_cert)
-        fetchOrganization(result['organizationAccount'])
+        fetchOrganization(result['request']['issuerAccount'])
       }
     }).catch((error) => {
       dispatch(hideLoader())
@@ -103,8 +104,8 @@ const CertificateQRReader = (props) => {
     setQrReaderVisible(false)
   }
 
-  const getExpireStatus = (issuedAt) => {
-    const timeDiff = moment.duration(moment().diff(moment(issuedAt, COMMON_DATE_FORMAT))).asHours()
+  const getExpireStatus = (_date) => {
+    const timeDiff = moment.duration(moment().diff(moment(_date, COMMON_DATE_FORMAT))).asHours()
     switch (true) {
       case (timeDiff <= 72):
         return 'info'
@@ -124,6 +125,7 @@ const CertificateQRReader = (props) => {
     sampleId,
     result,
     resultDate,
+    collectionDate,
     issuedAt,
     expireAt
   } = certificate
@@ -149,17 +151,17 @@ const CertificateQRReader = (props) => {
         !qrReaderVisible && !_.isEmpty(certificate) && !_.isEmpty(organization) &&
         <>
           <Alert
-            className={`gx-cert-description-${getExpireStatus(issuedAt)}`}
+            className={`gx-cert-description-${getExpireStatus(collectionDate)}`}
             message={`${intl.formatMessage({id: 'issue.date'})} ${issuedAt}`}
             description={`${intl.formatMessage({id: 'expire.date'})} ${expireAt}`}
-            type={getExpireStatus(issuedAt)}/>
+            type={getExpireStatus(collectionDate)}/>
           <div className={'gx-text-center gx-mt-4'}>
             <h3 className={'gx-font-weight-bold gx-text-primary'}>{`${lastName} ${firstName}`}</h3>
             <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(photo)} alt={intl.formatMessage({id: 'image'})}/>
           </div>
           <Descriptions
             bordered
-            className={`gx-mt-md-4 gx-cert-description-${getExpireStatus(issuedAt)} ant-alert-${getExpireStatus(issuedAt)}`}
+            className={`gx-mt-md-4 gx-cert-description-${getExpireStatus(collectionDate)} ant-alert-${getExpireStatus(collectionDate)}`}
             column={{xxl: 4, xl: 4, lg: 4, md: 2, sm: 2, xs: 1}}
             labelStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
             contentStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
