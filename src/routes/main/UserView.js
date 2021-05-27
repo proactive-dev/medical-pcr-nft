@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Modal, Spin } from 'antd'
+import { Button, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
@@ -9,10 +9,9 @@ import QRCode from 'qrcode.react'
 import { EditFilled, QrcodeOutlined } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { EDIT, ERROR, TYPE_USER } from '../../constants/AppConfigs'
-import { bigNumberArrayToString, findGender } from '../../util/helpers'
+import { bigNumberArrayToString } from '../../util/helpers'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-
-const FormItem = Form.Item
+import UserViewForm from '../../components/UserViewForm'
 
 const UserView = (props) => {
   const dispatch = useDispatch()
@@ -73,39 +72,15 @@ const UserView = (props) => {
     setQRCodeVisible(false)
   }
 
-  const {firstName, lastName, residence, birthDate, gender, phoneNumber, email} = info
-  let genderStr = ''
-  if (_.isNumber(gender)) {
-    genderStr = intl.formatMessage({id: `gender.${findGender(gender)}`})
-  }
-
   return (
     <Spin spinning={loader}>
       <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCode}>
         &nbsp;<FormattedMessage id="show.qrcode"/>
       </Button>
-      <Form
-        name="user-form"
-        layout={'vertical'}>
-        <FormItem name="lastName" label={intl.formatMessage({id: 'name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{lastName || ''} {firstName || ''}</span>
-        </FormItem>
-        <FormItem name="residence" label={intl.formatMessage({id: 'address'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{residence || ''}</span>
-        </FormItem>
-        <FormItem name="birthDate" label={intl.formatMessage({id: 'birthDate'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{birthDate || ''}</span>
-        </FormItem>
-        <FormItem name="gender" label={intl.formatMessage({id: 'gender'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{genderStr}</span>
-        </FormItem>
-        <FormItem name="phoneNumber" label={intl.formatMessage({id: 'phoneNumber'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{phoneNumber || ''}</span>
-        </FormItem>
-        <FormItem name="email" label={'Email'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{email || ''}</span>
-        </FormItem>
-      </Form>
+      <UserViewForm
+        intl={intl}
+        info={info}
+      />
       <Button className="gx-mt-4 gx-w-100 gx-btn-outline-primary" type="normal" icon={<EditFilled/>} onClick={onChange}>
         &nbsp;<FormattedMessage id="change"/>
       </Button>

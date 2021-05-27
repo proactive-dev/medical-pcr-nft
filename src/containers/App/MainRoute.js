@@ -52,9 +52,11 @@ const MainRoute = (props) => {
              component={CertificateQRReader}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${LIST}`}
              component={OrganizationList}/>
+      <Route exact path={`${match.url}${VIEW}`}
+             component={OrganizationView}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${VIEW}/:account`}
              component={OrganizationView}/>
-      <Route exact path={`${match.url}${REQUEST}/${NEW}`}
+      <Route exact path={`${match.url}:type/${REQUEST}/${NEW}`}
              component={RequestEdit}/>
       <Route exact path={`${match.url}${REQUEST}/${LIST}`}
              component={RequestList}/>

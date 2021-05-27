@@ -1,37 +1,46 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Button, DatePicker, Form, Input, Modal, Select, Spin } from 'antd'
+import { Button, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
-import moment from 'moment'
 import { isAddress } from '@ethersproject/address'
 import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
-import { COMMON_DATE_FORMAT, ERROR, GENDER, QRREADER_TIMEOUT, SUCCESS } from '../../constants/AppConfigs'
+import { ERROR, QRREADER_TIMEOUT, SUCCESS, TYPE_ORGANIZATION, TYPE_USER } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
-import ConfirmButton from '../../components/ConfirmButton'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { bigNumberArrayToString } from '../../util/helpers'
-
-const FormItem = Form.Item
-const {Option} = Select
-
-const formRef = React.createRef()
+import UserViewForm from '../../components/UserViewForm'
+import OrganizationViewForm from '../../components/OrganizationViewForm'
 
 const RequestEdit = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {contract} = chain
-  const {intl, history} = props
+  const {address, contract} = chain
+  const {intl, history, match} = props
   const [qrCodeModalOpen, setQRCodeModalOpen] = useState(false)
+  const [qrValue, setQrValue] = useState(null)
+  const [user, setUser] = useState({})
+  const [issuer, setIssuer] = useState({})
 
-  const saveTestRequest = async (values) => {
+  useEffect(() => {
+    if (match.params.type === TYPE_USER) {
+      fetchUser(address)
+    } else if (match.params.type === TYPE_ORGANIZATION) {
+      fetchOrganization(address)
+    } else {
+      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.invalidData'}))
+    }
+  }, [])
+
+  const saveTestRequest = async () => {
+    const reqParams = match.params.type === TYPE_USER ? [address, qrValue] : [qrValue, address]
     dispatch(showLoader())
     contract.newTestRequest(
-      values.account
+      ...reqParams
     ).then((result) => {
       dispatch(hideLoader())
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.request'}))
@@ -42,15 +51,15 @@ const RequestEdit = (props) => {
     })
   }
 
-  const fetchUser = (address) => {
+  const fetchUser = (account) => {
     dispatch(showLoader())
-    contract.getPerson(address).then((result) => {
+    contract.getPerson(account).then((result) => {
       dispatch(hideLoader())
       if (_.isEmpty(result)) {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
       } else {
         const _info = {
-          account: address,
+          account,
           firstName: ethers.utils.parseBytes32String(result['firstName']),
           lastName: ethers.utils.parseBytes32String(result['lastName']),
           residence: bigNumberArrayToString(result['residence']),
@@ -62,10 +71,34 @@ const RequestEdit = (props) => {
         if (_.isEmpty(_info['firstName']) || _.isEmpty(_info['lastName']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
         } else {
-          if (_info.birthDate) {
-            _info['birthDate'] = moment(_info.birthDate, COMMON_DATE_FORMAT)
-          }
-          formRef.current.setFieldsValue(_info)
+          setUser(_info)
+        }
+      }
+    }).catch((error) => {
+      dispatch(hideLoader())
+      openNotificationWithIcon(ERROR, error.message)
+    })
+  }
+
+  const fetchOrganization = (account) => {
+    dispatch(showLoader())
+    contract.getOrganization(account).then((result) => {
+      dispatch(hideLoader())
+      if (_.isEmpty(result)) {
+        openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
+      } else {
+        const _info = {
+          account,
+          name: ethers.utils.parseBytes32String(result['name']),
+          delegateName: ethers.utils.parseBytes32String(result['representative']),
+          residence: bigNumberArrayToString(result['streetAddress']),
+          phoneNumber: ethers.utils.parseBytes32String(result['phone']),
+          email: ethers.utils.parseBytes32String(result['mail'])
+        }
+        if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
+          openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
+        } else {
+          setIssuer(_info)
         }
       }
     }).catch((error) => {
@@ -85,8 +118,12 @@ const RequestEdit = (props) => {
   const handleQrCodeScan = (value) => {
     setQRCodeModalOpen(false)
     if (isAddress(value)) {
-      formRef.current.setFieldsValue({account: value})
-      fetchUser(value)
+      setQrValue(value)
+      if (match.params.type === TYPE_USER) {
+        fetchOrganization(value)
+      } else if (match.params.type === TYPE_ORGANIZATION) {
+        fetchUser(value)
+      }
     } else {
       openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.invalidAddress'}))
     }
@@ -106,90 +143,21 @@ const RequestEdit = (props) => {
       <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCodeModal}>
         &nbsp;<FormattedMessage id="scan.qrCode"/>
       </Button>
-      <Form
-        name="request-form"
-        layout={'vertical'}
-        ref={formRef}
-        onFinish={saveTestRequest}>
-        <FormItem
-          name="account"
-          label={'ID'}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})},
-            {
-              validator: (_, value) => (!value || isAddress(value)) ?
-                Promise.resolve() : Promise.reject(intl.formatMessage({id: 'alert.invalidAddress'}))
-            }
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="lastName"
-          label={intl.formatMessage({id: 'name.last'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="firstName"
-          label={intl.formatMessage({id: 'name.first'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="residence"
-          label={intl.formatMessage({id: 'address'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="birthDate"
-          label={intl.formatMessage({id: 'birthDate'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
-        </FormItem>
-        <FormItem
-          name="gender"
-          label={intl.formatMessage({id: 'gender'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Select className="gx-mt-1 gx-mb-1" allowClear>
-            {
-              GENDER.map(gender =>
-                <Option value={gender.value} key={gender.key}>
-                  {intl.formatMessage({id: `gender.${gender.key}`})}
-                </Option>
-              )
-            }
-          </Select>
-        </FormItem>
-        <FormItem
-          name="phoneNumber"
-          label={intl.formatMessage({id: 'phoneNumber.example'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="email"
-          label={'Email'}
-          rules={[
-            {type: 'email', message: intl.formatMessage({id: 'alert.invalidEmail'})},
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-      </Form>
-      <ConfirmButton intl={intl} form={formRef} btnTitle={'request'} confirmEnabled={false}/>
+      <UserViewForm
+        intl={intl}
+        info={user}
+      />
+      <OrganizationViewForm
+        intl={intl}
+        info={issuer}
+      />
+      <Button
+        className="gx-mt-4 login-form-button"
+        type="primary"
+        disabled={_.isEmpty(qrValue)}
+        onClick={saveTestRequest}>
+        <FormattedMessage id="request"/>
+      </Button>
       {
         qrCodeModalOpen &&
         <Modal

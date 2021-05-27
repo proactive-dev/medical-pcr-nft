@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Spin } from 'antd'
+import { Button, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
-import { EditFilled } from '@ant-design/icons'
+import QRCode from 'qrcode.react'
+import { EditFilled, QrcodeOutlined } from '@ant-design/icons'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { EDIT, ERROR, TYPE_ORGANIZATION } from '../../constants/AppConfigs'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { bigNumberArrayToString, findRole } from '../../util/helpers'
-
-const FormItem = Form.Item
+import { bigNumberArrayToString } from '../../util/helpers'
+import OrganizationViewForm from '../../components/OrganizationViewForm'
 
 const OrganizationView = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
   const {intl, match, history} = props
-  const {contract} = chain
+  const {address, contract} = chain
   const [account, setAccount] = useState('')
   const [info, setInfo] = useState({})
+  const [qrCodeVisible, setQRCodeVisible] = useState(false)
 
   useEffect(() => {
     let account = match.params.account
     if (!_.isEmpty(account) && !_.isUndefined(account)) {
       setAccount(account)
       fetchData(account)
+    } else if (!_.isEmpty(address)) {
+      setAccount(address)
+      fetchData(address)
     } else {
       openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.invalidAddress'}))
     }
@@ -70,43 +74,46 @@ const OrganizationView = (props) => {
     })
   }
 
-  const {role, name, delegateName, residence, phoneNumber, email} = info
-  let roleStr = ''
-  if (_.isNumber(role)) {
-    roleStr = intl.formatMessage({id: `role.${findRole(role)}`})
+  const showQRCode = () => {
+    setQRCodeVisible(true)
   }
 
+  const closeQRCode = e => {
+    setQRCodeVisible(false)
+  }
 
   return (
     <Spin spinning={loader}>
-      <Form
-        name="organization-form"
-        layout={'vertical'}>
-        <FormItem name="account" label={'ID'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{account || ''}</span>
-        </FormItem>
-        <FormItem name="role" label={intl.formatMessage({id: 'role'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{roleStr || ''}</span>
-        </FormItem>
-        <FormItem name="name" label={intl.formatMessage({id: 'organization.name'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{name || ''}</span>
-        </FormItem>
-        <FormItem name="delegateName" label={intl.formatMessage({id: 'organization.delegate'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{delegateName || ''}</span>
-        </FormItem>
-        <FormItem name="residence" label={intl.formatMessage({id: 'organization.address'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{residence || ''}</span>
-        </FormItem>
-        <FormItem name="phoneNumber" label={intl.formatMessage({id: 'phoneNumber'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{phoneNumber || ''}</span>
-        </FormItem>
-        <FormItem name="email" label={'Email'}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{email || ''}</span>
-        </FormItem>
-      </Form>
-      <Button className="gx-mt-4 gx-w-100 gx-btn-outline-primary" type="normal" icon={<EditFilled/>} onClick={onChange}>
-        &nbsp;<FormattedMessage id="change"/>
+      <Button className="gx-mt-md-4 gx-btn-primary" type="normal" icon={<QrcodeOutlined/>} onClick={showQRCode}>
+        &nbsp;<FormattedMessage id="show.qrcode"/>
       </Button>
+      <OrganizationViewForm
+        intl={intl}
+        info={info}
+        account={account}
+        showAll={true}
+      />
+      {
+        !_.isEmpty(match.params.account) && !_.isUndefined(match.params.account) &&
+        <Button className="gx-mt-4 gx-w-100 gx-btn-outline-primary" type="normal" icon={<EditFilled/>}
+                onClick={onChange}>
+          &nbsp;<FormattedMessage id="change"/>
+        </Button>
+      }
+      <Modal
+        visible={qrCodeVisible}
+        footer={null}
+        onOk={closeQRCode}
+        onCancel={closeQRCode}>
+        <div className={'gx-text-center'}>
+          <QRCode
+            value={account}
+            size={200}
+            level="H"/>
+          <br/>
+          <h5 className={'gx-m-2'}>{account}</h5>
+        </div>
+      </Modal>
     </Spin>
   )
 }

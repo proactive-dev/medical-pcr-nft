@@ -72,6 +72,10 @@ export const USER_MENUS = [
     title: 'view.me'
   },
   {
+    path: `${TYPE_USER}/${REQUEST}/${NEW}`,
+    title: 'test.request'
+  },
+  {
     path: `${CERTIFICATE}/${LIST}`,
     title: 'view.my.cert'
   },
@@ -89,12 +93,20 @@ export const ADMIN_MENUS = [
   {
     path: `${TYPE_ORGANIZATION}/${EDIT}`,
     title: 'register.organization'
+  },
+  {
+    path: `${CERTIFICATE}/${LIST}`,
+    title: 'view.all.cert'
   }
 ]
 
 export const ISSUER_MENUS = [
   {
-    path: `${REQUEST}/${NEW}`,
+    path: `${VIEW}`,
+    title: 'view.me'
+  },
+  {
+    path: `${TYPE_ORGANIZATION}/${REQUEST}/${NEW}`,
     title: 'test.request'
   },
   {
