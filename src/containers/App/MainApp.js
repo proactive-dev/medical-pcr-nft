@@ -99,7 +99,7 @@ const MainApp = (props) => {
       if (_.isEmpty(result)) {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
       } else {
-        dispatch(setRoles({isAdmin: result[0], isIssuer: result[1]}))
+        dispatch(setRoles({isAdmin: result[0], isIssuer: result[1], isBusiness: result[2]}))
         setConnected(true)
       }
     }).catch((error) => {

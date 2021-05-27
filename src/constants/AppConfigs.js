@@ -85,6 +85,13 @@ export const USER_MENUS = [
   }
 ]
 
+export const BUSINESS_MENUS = [
+  {
+    path: `${CERTIFICATE}/${SCAN}`,
+    title: 'read.other'
+  }
+]
+
 export const ADMIN_MENUS = [
   {
     path: `${TYPE_ORGANIZATION}/${LIST}`,
