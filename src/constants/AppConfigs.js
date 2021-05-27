@@ -1,5 +1,5 @@
 export const COPYRIGHT_COMPANY = 'Xyon.,Co. Ltd. All Rights Reserved.'
-export const PROJECT_NAME = 'PCR PASS'
+export const PROJECT_NAME = 'XYON CERT'
 export const STORAGE_KEY = 'xy-cert'
 
 export const LANGUAGES = [
