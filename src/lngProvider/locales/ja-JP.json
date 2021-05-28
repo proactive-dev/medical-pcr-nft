@@ -82,7 +82,7 @@
   "information.user": "個人情報",
   "issue": "発行",
   "issue.certificate": "証明書発行",
-  "issue.certificate.title": "検査完了・証明書発行",
+  "issue.certificate.title": "証明書発行待ち",
   "issue.date": "発行日時",
   "issuer": "発行者",
   "user": "ユーザー",
