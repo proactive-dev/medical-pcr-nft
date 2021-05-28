@@ -1,10 +1,10 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { injectIntl } from 'react-intl'
 import {
   CERTIFICATE,
   EDIT,
+  HOME,
   LIST,
   NEW,
   REQUEST,
@@ -22,24 +22,15 @@ import RequestList from '../../routes/main/RequestList'
 import NewCertificate from '../../routes/main/NewCertificate'
 import CertificateList from '../../routes/main/CertificateList'
 import CertificateQRReader from '../../routes/main/CertificateQRReader'
+import Home from '../../routes/main/Home'
 
 const MainRoute = (props) => {
   const {match} = props
-  const roles = useSelector(state => state.chain.roles)
-  const {isAdmin, isIssuer} = roles
-
-  const getHomePath = () => {
-    if (isAdmin) {
-      return `/${TYPE_ORGANIZATION}/${LIST}`
-    } else if (isIssuer) {
-      return `/${REQUEST}/${LIST}`
-    } else {
-      return `/${CERTIFICATE}/${LIST}`
-    }
-  }
 
   return (
     <Switch>
+      <Route exact path={`${match.url}${HOME}`}
+             component={Home}/>
       <Route exact path={`${match.url}:type/${EDIT}`}
              component={InfoEdit}/>
       <Route exact path={`${match.url}${TYPE_USER}/${VIEW}`}
@@ -60,7 +51,7 @@ const MainRoute = (props) => {
              component={RequestEdit}/>
       <Route exact path={`${match.url}${REQUEST}/${LIST}`}
              component={RequestList}/>
-      <Redirect exact from="/" to={getHomePath()}/>
+      <Redirect exact from="/" to={`/${HOME}`}/>
       <Redirect from="*" to="/404"/>
     </Switch>
   )

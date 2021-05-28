@@ -17,6 +17,17 @@ const SidebarContent = () => {
   const selectedKeys = pathname.substr(1)
   const defaultOpenKeys = selectedKeys.split('/')[1]
 
+  let menus = []
+  if (isAdmin) {
+    menus = ADMIN_MENUS
+  } else if (isIssuer) {
+    menus = ISSUER_MENUS
+  } else if (isBusiness) {
+    menus = BUSINESS_MENUS
+  } else {
+    menus = USER_MENUS
+  }
+
   return (
     <Fragment>
       <SidebarLogo/>
@@ -28,35 +39,7 @@ const SidebarContent = () => {
             theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
             mode="inline">
             {
-              isAdmin && ADMIN_MENUS.map(({path, title}) =>
-                <Menu.Item key={path}>
-                  <Link to={`/${path}`}>
-                    <FormattedMessage id={title}/>
-                  </Link>
-                </Menu.Item>
-              )
-            }
-            {
-              !isAdmin && isIssuer && ISSUER_MENUS.map(({path, title}) =>
-                <Menu.Item key={path}>
-                  <Link to={`/${path}`}>
-                    <FormattedMessage id={title}/>
-                  </Link>
-                </Menu.Item>
-              )
-
-            }
-            {
-              !isAdmin && !isIssuer && isBusiness && BUSINESS_MENUS.map(({path, title}) =>
-                <Menu.Item key={path}>
-                  <Link to={`/${path}`}>
-                    <FormattedMessage id={title}/>
-                  </Link>
-                </Menu.Item>
-              )
-            }
-            {
-              !isAdmin && !isIssuer && !isBusiness && USER_MENUS.map(({path, title}) =>
+              menus.map(({path, title}) =>
                 <Menu.Item key={path}>
                   <Link to={`/${path}`}>
                     <FormattedMessage id={title}/>

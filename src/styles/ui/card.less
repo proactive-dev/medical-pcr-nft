@@ -467,3 +467,26 @@
     font-size: @font-size-base;
   }
 }
+
+.@{class-prefix}-card-home {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+  background-color: @primary-color !important;
+  color: @white-color !important;
+  cursor: pointer;
+  text-align: center !important;
+
+  & .ant-card-body {
+    font-size: @font-size-lg;
+
+    @media screen and (max-width: @screen-md-max) {
+      font-size: @font-size-base;
+    }
+
+    @media screen and (max-width: @screen-xs-max) {
+      padding-left: (@gx-card-padding-sm - 4px);
+      padding-right: (@gx-card-padding-sm - 4px);
+      font-size: @font-size-sm;
+    }
+  }
+}
