@@ -26,6 +26,7 @@ import WalletCreateModal from '../../components/WalletCreateModal'
 import WalletRestoreModal from '../../components/WalletRestoreModal'
 import { setContract, setIPFS, setRoles } from '../../appRedux/actions/Chain'
 import MainRoute from './MainRoute'
+import TermsModal from '../../components/TermsModal'
 
 const {Content, Footer} = Layout
 const {confirm} = Modal
@@ -39,8 +40,9 @@ const MainApp = (props) => {
   const settings = useSelector(state => state.settings)
   const {navStyle, width} = settings
   const [connected, setConnected] = useState(false)
-  const [visibleCreateModel, setVisibleCreateModel] = useState(false)
-  const [visibleRestoreModel, setVisibleRestoreModel] = useState(false)
+  const [visibleCreateModal, setVisibleCreateModal] = useState(false)
+  const [visibleRestoreModal, setVisibleRestoreModal] = useState(false)
+  const [visibleTermsModal, setVisibleTermsModal] = useState(false)
 
   useEffect(() => {
     checkSavedInfo()
@@ -108,13 +110,18 @@ const MainApp = (props) => {
   }
 
   const onCreate = (data) => {
-    setVisibleCreateModel(false)
+    setVisibleCreateModal(false)
     showConfirmSaveInfo(data)
   }
 
   const onRestore = (data) => {
-    setVisibleRestoreModel(false)
+    setVisibleRestoreModal(false)
     showConfirmSaveInfo(data)
+  }
+
+  const onAgreeTerms = () => {
+    setVisibleTermsModal(false)
+    setVisibleCreateModal(true)
   }
 
   const showConfirmSaveInfo = (data) => {
@@ -170,30 +177,37 @@ const MainApp = (props) => {
                     }
                     <Col span={8} xxl={8} xl={8} lg={8} md={12} sm={12} xs={24}>
                       <Button className="login-form-button" size="large" type="primary"
-                              onClick={() => setVisibleCreateModel(true)}>
+                              onClick={() => setVisibleTermsModal(true)}>
                         <FormattedMessage id="create"/>
                       </Button>
                     </Col>
                     <Col span={8} xxl={8} xl={8} lg={8} md={12} sm={12} xs={24}>
                       <Button className="login-form-button" size="large" type="secondary"
-                              onClick={() => setVisibleRestoreModel(true)}>
+                              onClick={() => setVisibleRestoreModal(true)}>
                         <FormattedMessage id="import.or.restore"/>
                       </Button>
                     </Col>
                   </Row>
                   {
-                    visibleCreateModel &&
+                    visibleCreateModal &&
                     <WalletCreateModal
                       intl={intl}
                       onOk={onCreate}
-                      onCancel={() => setVisibleCreateModel(false)}/>
+                      onCancel={() => setVisibleCreateModal(false)}/>
                   }
                   {
-                    visibleRestoreModel &&
+                    visibleRestoreModal &&
                     <WalletRestoreModal
                       intl={intl}
                       onOk={onRestore}
-                      onCancel={() => setVisibleRestoreModel(false)}/>
+                      onCancel={() => setVisibleRestoreModal(false)}/>
+                  }
+                  {
+                    visibleTermsModal &&
+                    <TermsModal
+                      intl={intl}
+                      onOk={onAgreeTerms}
+                      onCancel={() => setVisibleTermsModal(false)}/>
                   }
                 </Fragment>
             }
