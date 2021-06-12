@@ -106,6 +106,7 @@
   "phoneNumber": "Phone Number",
   "phoneNumber.example": "Phone Number (Ex:09011112222)",
   "read.other": "Read Other's Certificate",
+  "read.realtime": "Read Certificate realtime",
   "register": "Register",
   "register.me": "Save Information",
   "register.user": "Save User",

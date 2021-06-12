@@ -35,6 +35,8 @@ export const CERTIFICATE = 'certificate'
 export const REQUEST = 'request'
 export const TYPE_USER = 'user'
 export const TYPE_ORGANIZATION = 'organization'
+export const ONCE = 'once'
+export const REALTIME = 'realtime'
 
 export const GENDER = [
   {
@@ -81,15 +83,19 @@ export const USER_MENUS = [
     title: 'view.my.cert'
   },
   {
-    path: `${CERTIFICATE}/${SCAN}`,
+    path: `${CERTIFICATE}/${SCAN}/${ONCE}`,
     title: 'read.other'
   }
 ]
 
 export const BUSINESS_MENUS = [
   {
-    path: `${CERTIFICATE}/${SCAN}`,
+    path: `${CERTIFICATE}/${SCAN}/${ONCE}`,
     title: 'read.other'
+  },
+  {
+    path: `${CERTIFICATE}/${SCAN}/${REALTIME}`,
+    title: 'read.realtime'
   }
 ]
 
