@@ -51,7 +51,10 @@ const OrganizationView = (props) => {
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: ethers.utils.parseBytes32String(result['mail']),
+          sample: ethers.utils.parseBytes32String(result['sample']),
+          collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
+          testMethod: ethers.utils.parseBytes32String(result['testMethod'])
         }
         if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))

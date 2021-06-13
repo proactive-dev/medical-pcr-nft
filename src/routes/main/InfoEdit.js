@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { DatePicker, Form, Input, Select, Spin, Upload } from 'antd'
@@ -25,6 +25,7 @@ const InfoEdit = (props) => {
   const chain = useSelector(state => state.chain)
   const {address, contract, ipfs} = chain
   const {intl, history, location, match} = props
+  const [roleValue, setRoleValue] = useState(0)
 
   useEffect(() => {
     if (!_.isEmpty(location.state) && !_.isEmpty(location.state.info)) {
@@ -32,6 +33,7 @@ const InfoEdit = (props) => {
       if (info && info.birthDate) {
         info['birthDate'] = moment(info.birthDate, COMMON_DATE_FORMAT)
       }
+      setRoleValue(info.role)
       formRef.current.setFieldsValue(info)
     }
   }, [])
@@ -73,7 +75,10 @@ const InfoEdit = (props) => {
       ethers.utils.formatBytes32String(values.delegateName),
       [...ethers.utils.toUtf8Bytes(values.residence)],
       ethers.utils.formatBytes32String(values.phoneNumber),
-      ethers.utils.formatBytes32String(values.email)
+      ethers.utils.formatBytes32String(values.email),
+      ethers.utils.formatBytes32String(values.sample ? values.sample : ''),
+      ethers.utils.formatBytes32String(values.collectionMethod ? values.collectionMethod : ''),
+      ethers.utils.formatBytes32String(values.testMethod ? values.testMethod : '')
     ).then((result) => {
       dispatch(hideLoader())
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.organization'}))
@@ -82,6 +87,10 @@ const InfoEdit = (props) => {
       dispatch(hideLoader())
       openNotificationWithIcon(ERROR, error.message)
     })
+  }
+
+  const onRoleChanged = (value) => {
+    setRoleValue(value)
   }
 
   const normalizeFile = (e) => {
@@ -220,7 +229,7 @@ const InfoEdit = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <Select className="gx-mt-1 gx-mb-1" allowClear>
+          <Select className="gx-mt-1 gx-mb-1" allowClear onChange={onRoleChanged}>
             {
               ROLE.map(role =>
                 <Option value={role.value} key={role.key}>
@@ -271,6 +280,35 @@ const InfoEdit = (props) => {
           ]}>
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
         </FormItem>
+        {
+          (roleValue === 0) &&
+          <>
+            <FormItem
+              name="sample"
+              label={intl.formatMessage({id: 'collection.sample'})}
+              rules={[
+                {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+              ]}>
+              <Input className="gx-mt-1 gx-mb-1" allowClear/>
+            </FormItem>
+            <FormItem
+              name="collectionMethod"
+              label={intl.formatMessage({id: 'collection.method'})}
+              rules={[
+                {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+              ]}>
+              <Input className="gx-mt-1 gx-mb-1" allowClear/>
+            </FormItem>
+            <FormItem
+              name="testMethod"
+              label={intl.formatMessage({id: 'test.method'})}
+              rules={[
+                {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+              ]}>
+              <Input className="gx-mt-1 gx-mb-1" allowClear/>
+            </FormItem>
+          </>
+        }
       </Form>
     )
   }

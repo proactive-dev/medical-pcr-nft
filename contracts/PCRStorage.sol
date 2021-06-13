@@ -27,6 +27,9 @@ struct Organization {
     uint[] streetAddress;
     bytes32 phone;
     bytes32 mail;
+    bytes32 sample;
+    bytes32 collectionMethod;
+    bytes32 testMethod;
 }
 
 struct TestRequest {
@@ -34,6 +37,8 @@ struct TestRequest {
     Person user;
     address issuerAccount;
     Organization issuer;
+    bytes32 sampleId;
+    bytes32 collectionDate;
     uint256 requestedAt;
     uint256 issuedAt;
 }
@@ -41,13 +46,8 @@ struct TestRequest {
 struct Certificate {
     uint256 testId;
     TestRequest request;
-    bytes32 sampleId;
-    bytes32 sample;
-    bytes32 collectionMethod;
-    bytes32 collectionDate;
-    bytes32 testMethod;
     TestResult result;
-    bytes32 resultDate;
+    uint256 resultDate;
     string fileHash;
     uint256 issuedAt;
     uint256 expireAt;
@@ -69,8 +69,8 @@ contract PCRStorage is AccessControl {
     mapping (address => uint256[]) certificateIdsPerIssuer;
 
     event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, uint[] residence, bytes32 phone, bytes32 mail, string photo);
-    event SetOrganization(OrganizationRole role, address who, bytes32 name, bytes32 representative, uint[] streetAddress, bytes32 phone, bytes32 mail);
-    event NewTestRequest(uint256 id, address user, address issuer, uint256 requestedAt);
+    event SetOrganization(OrganizationRole role, address who, bytes32 name, bytes32 representative, uint[] streetAddress, bytes32 phone, bytes32 mail, bytes32 sample, bytes32 collectionMethod, bytes32 testMethod);
+    event NewTestRequest(uint256 id, address user, address issuer, bytes32 sampleId, bytes32 collectionDate, uint256 requestedAt);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -145,7 +145,7 @@ contract PCRStorage is AccessControl {
         return people[_who];
     }
 
-    function setOrganization(OrganizationRole _role, address _who, bytes32 _name, bytes32 _representative, uint[] memory _streetAddress, bytes32 _phone, bytes32 _mail) external onlyAdmin {
+    function setOrganization(OrganizationRole _role, address _who, bytes32 _name, bytes32 _representative, uint[] memory _streetAddress, bytes32 _phone, bytes32 _mail, bytes32 _sample, bytes32 _collectionMethod, bytes32 _testMethod) external onlyAdmin {
         if (organizations[_who].name == "" ) {
             organizationAccounts.push(_who);
         }
@@ -156,8 +156,11 @@ contract PCRStorage is AccessControl {
         organizations[_who].streetAddress = _streetAddress;
         organizations[_who].phone = _phone;
         organizations[_who].mail = _mail;
+        organizations[_who].sample = _sample;
+        organizations[_who].collectionMethod = _collectionMethod;
+        organizations[_who].testMethod = _testMethod;
 
-        emit SetOrganization(_role, _who, _name, _representative, _streetAddress, _phone, _mail);
+        emit SetOrganization(_role, _who, _name, _representative, _streetAddress, _phone, _mail, _sample, _collectionMethod, _testMethod);
     }
 
     function getOrganization(address _who) external view returns (Organization memory) {
@@ -223,7 +226,7 @@ contract PCRStorage is AccessControl {
         return (_ids, _certificates);
     }
 
-    function newTestRequest(address _user, address _issuer) external {
+    function newTestRequest(address _user, address _issuer, bytes32 _sampleId, bytes32 _collectionDate) external {
         require(!isBusinessRole(_issuer), "Account with business role can not call this function");
         uint256 _id = _testIdTracker.current();
 
@@ -231,12 +234,14 @@ contract PCRStorage is AccessControl {
         testRequests[_id].user = people[_user];
         testRequests[_id].issuerAccount = _issuer;
         testRequests[_id].issuer = organizations[_issuer];
+        testRequests[_id].sampleId = _sampleId;
+        testRequests[_id].collectionDate = _collectionDate;
         testRequests[_id].requestedAt = block.timestamp;
         testRequests[_id].issuedAt = 0;
         testIdsPerIssuer[_issuer].push(_id);
 
         _testIdTracker.increment();
-        emit NewTestRequest(_id, _user, _issuer, block.timestamp);
+        emit NewTestRequest(_id, _user, _issuer, _sampleId, _collectionDate, block.timestamp);
     }
 
     function setCertificate(uint256 _testId, Certificate memory _certificate) public onlyAdmin {

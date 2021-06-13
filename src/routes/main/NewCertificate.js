@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { DatePicker, Divider, Form, Input, Select, Spin } from 'antd'
+import { Divider, Form, Select, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import { Font, pdf } from '@react-pdf/renderer'
-import { COMMON_DATE_FORMAT, ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
+import { ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import UserViewForm from '../../components/UserViewForm'
@@ -75,7 +75,9 @@ const NewCertificate = (props) => {
           birthDate: ethers.utils.parseBytes32String(result['user']['birth']),
           gender: parseInt(result['user']['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['user']['phone']),
-          email: ethers.utils.parseBytes32String(result['user']['mail'])
+          email: ethers.utils.parseBytes32String(result['user']['mail']),
+          sampleId: ethers.utils.parseBytes32String(result['sampleId']),
+          collectionDate: ethers.utils.parseBytes32String(result['collectionDate'])
         }
         if (_.isEmpty(_request['firstName']) || _.isEmpty(_request['lastName']) || _.isEmpty(_request['phoneNumber']) || _.isEmpty(_request['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
@@ -100,11 +102,15 @@ const NewCertificate = (props) => {
         window.history.back()
       } else {
         const _organization = {
+          role: result['role'],
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: ethers.utils.parseBytes32String(result['mail']),
+          sample: ethers.utils.parseBytes32String(result['sample']),
+          collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
+          testMethod: ethers.utils.parseBytes32String(result['testMethod'])
         }
         if (_.isEmpty(_organization['name']) || _.isEmpty(_organization['phoneNumber']) || _.isEmpty(_organization['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
@@ -151,13 +157,7 @@ const NewCertificate = (props) => {
     dispatch(showLoader())
     certContract.mintCertificate(
       Number(requestId),
-      ethers.utils.formatBytes32String(values.sampleId),
-      ethers.utils.formatBytes32String(values.sample),
-      ethers.utils.formatBytes32String(values.collectionMethod),
-      ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT)),
-      ethers.utils.formatBytes32String(values.testMethod),
       values.testResult,
-      ethers.utils.formatBytes32String(values.testResultDate.format(COMMON_DATE_FORMAT)),
       fileHash
     ).then((result) => {
       dispatch(hideLoader())
@@ -187,45 +187,11 @@ const NewCertificate = (props) => {
         layout={'vertical'}
         ref={formRef}
         onFinish={submit}>
-        <FormItem
-          name="sampleId"
-          label={intl.formatMessage({id: 'collection.sampleId'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
         </FormItem>
-        <FormItem
-          name="sample"
-          label={intl.formatMessage({id: 'collection.sample'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="collectionMethod"
-          label={intl.formatMessage({id: 'collection.method'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="collectionDate"
-          label={intl.formatMessage({id: 'collection.date'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
-        </FormItem>
-        <FormItem
-          name="testMethod"
-          label={intl.formatMessage({id: 'test.method'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['collectionDate'] || ''}</span>
         </FormItem>
         <FormItem
           name="testResult"
@@ -242,14 +208,6 @@ const NewCertificate = (props) => {
               )
             }
           </Select>
-        </FormItem>
-        <FormItem
-          name="testResultDate"
-          label={intl.formatMessage({id: 'test.result.date'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
         </FormItem>
       </Form>
       <Divider orientation="left">

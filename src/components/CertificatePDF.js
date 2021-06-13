@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
 
 const CertificatePDF = (props) => {
   const {id, request, issuer, test} = props
-  const {sampleId, sample, collectionMethod, collectionDate, testMethod, testResult, testResultDate} = test
+  const {testResult} = test
 
   return (
     <Document>
@@ -134,23 +134,23 @@ const CertificatePDF = (props) => {
           <Text style={styles.subTitle}>検査情報</Text>
           <View style={styles.infoRow}>
             <Text style={styles.label}>検体ナンバー</Text>
-            <Text style={styles.value}>{sampleId}</Text>
+            <Text style={styles.value}>{request.sampleId}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>採取検体</Text>
-            <Text style={styles.value}>{sample}</Text>
+            <Text style={styles.value}>{issuer.sample}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>検体採取方法</Text>
-            <Text style={styles.value}>{collectionMethod}</Text>
+            <Text style={styles.value}>{issuer.collectionMethod}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>検体採取日時</Text>
-            <Text style={styles.value}>{collectionDate.format(COMMON_DATE_FORMAT)}</Text>
+            <Text style={styles.value}>{request.collectionDate}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>検査方法</Text>
-            <Text style={styles.value}>{testMethod}</Text>
+            <Text style={styles.value}>{issuer.testMethod}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>検査結果</Text>
@@ -158,7 +158,7 @@ const CertificatePDF = (props) => {
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.label}>結果判定日時</Text>
-            <Text style={styles.value}>{testResultDate.format(COMMON_DATE_FORMAT)}</Text>
+            <Text style={styles.value}>{moment().format(COMMON_DATE_FORMAT)}</Text>
           </View>
         </View>
         <View style={styles.issuerInfoContainer}>

@@ -35,10 +35,10 @@ const CertificateQRReader = (props) => {
           firstName: ethers.utils.parseBytes32String(result['request']['user']['firstName']),
           lastName: ethers.utils.parseBytes32String(result['request']['user']['lastName']),
           photo: result['request']['user']['photo'],
-          sampleId: ethers.utils.parseBytes32String(result['sampleId']),
+          sampleId: ethers.utils.parseBytes32String(result['request']['sampleId']),
           result: parseInt(result['result']),
-          resultDate: ethers.utils.parseBytes32String(result['resultDate']),
-          collectionDate: ethers.utils.parseBytes32String(result['collectionDate']),
+          resultDate: timestamp2Date(result['resultDate'].toNumber()),
+          collectionDate: ethers.utils.parseBytes32String(result['request']['collectionDate']),
           issuedAt: timestamp2Date(result['issuedAt'].toNumber()),
           expireAt: timestamp2Date(result['expireAt'].toNumber())
         }
@@ -63,7 +63,10 @@ const CertificateQRReader = (props) => {
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: ethers.utils.parseBytes32String(result['mail']),
+          sample: ethers.utils.parseBytes32String(result['sample']),
+          collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
+          testMethod: ethers.utils.parseBytes32String(result['testMethod'])
         }
         if (_.isEmpty(_info['name'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))

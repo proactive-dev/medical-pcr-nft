@@ -1,19 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Button, Modal, Spin } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import { isAddress } from '@ethersproject/address'
 import { QrcodeOutlined } from '@ant-design/icons'
 import QrReader from 'react-qr-reader'
-import { ERROR, QRREADER_TIMEOUT, SUCCESS, TYPE_ORGANIZATION, TYPE_USER } from '../../constants/AppConfigs'
+import {
+  COMMON_DATE_FORMAT,
+  ERROR,
+  QRREADER_TIMEOUT,
+  SUCCESS,
+  TYPE_ORGANIZATION,
+  TYPE_USER
+} from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { bigNumberArrayToString } from '../../util/helpers'
 import UserViewForm from '../../components/UserViewForm'
 import OrganizationViewForm from '../../components/OrganizationViewForm'
+
+const FormItem = Form.Item
+
+const formRef = React.createRef()
 
 const RequestEdit = (props) => {
   const dispatch = useDispatch()
@@ -36,11 +47,13 @@ const RequestEdit = (props) => {
     }
   }, [])
 
-  const saveTestRequest = async () => {
+  const saveTestRequest = async (values) => {
     const reqParams = match.params.type === TYPE_USER ? [address, qrValue] : [qrValue, address]
     dispatch(showLoader())
     contract.newTestRequest(
-      ...reqParams
+      ...reqParams,
+      ethers.utils.formatBytes32String(values.sampleId),
+      ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT))
     ).then((result) => {
       dispatch(hideLoader())
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.request'}))
@@ -88,12 +101,16 @@ const RequestEdit = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
       } else {
         const _info = {
+          role: result['role'],
           account,
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: ethers.utils.parseBytes32String(result['mail']),
+          sample: ethers.utils.parseBytes32String(result['sample']),
+          collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
+          testMethod: ethers.utils.parseBytes32String(result['testMethod'])
         }
         if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
@@ -151,11 +168,33 @@ const RequestEdit = (props) => {
         intl={intl}
         info={issuer}
       />
+      <Form
+        name="request-form"
+        layout={'vertical'}
+        ref={formRef}
+        onFinish={saveTestRequest}>
+        <FormItem
+          name="sampleId"
+          label={intl.formatMessage({id: 'collection.sampleId'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <Input className="gx-mt-1 gx-mb-1" allowClear/>
+        </FormItem>
+        <FormItem
+          name="collectionDate"
+          label={intl.formatMessage({id: 'collection.date'})}
+          rules={[
+            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
+          ]}>
+          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
+        </FormItem>
+      </Form>
       <Button
         className="gx-mt-4 login-form-button"
         type="primary"
         disabled={_.isEmpty(qrValue)}
-        onClick={saveTestRequest}>
+        onClick={() => formRef.current.submit()}>
         <FormattedMessage id="request"/>
       </Button>
       {

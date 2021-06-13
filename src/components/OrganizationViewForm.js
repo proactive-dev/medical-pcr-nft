@@ -7,7 +7,7 @@ const FormItem = Form.Item
 
 const OrganizationViewForm = (props) => {
   const {intl, account, info, showAll} = props
-  const {role, name, delegateName, residence, phoneNumber, email} = info
+  const {role, name, delegateName, residence, phoneNumber, email, sample, collectionMethod, testMethod} = info
   let roleStr = ''
   if (showAll && _.isNumber(role)) {
     roleStr = intl.formatMessage({id: `role.${findRole(role)}`})
@@ -43,6 +43,20 @@ const OrganizationViewForm = (props) => {
       <FormItem name="email" label={'Email'}>
         <span className="ant-input gx-mt-1 gx-mb-1">{email || ''}</span>
       </FormItem>
+      {
+        (role === 0) &&
+        <>
+          <FormItem name="sample" label={intl.formatMessage({id: 'collection.sample'})}>
+            <span className="ant-input gx-mt-1 gx-mb-1">{sample || ''}</span>
+          </FormItem>
+          <FormItem name="collectionMethod" label={intl.formatMessage({id: 'collection.method'})}>
+            <span className="ant-input gx-mt-1 gx-mb-1">{collectionMethod || ''}</span>
+          </FormItem>
+          <FormItem name="testMethod" label={intl.formatMessage({id: 'test.method'})}>
+            <span className="ant-input gx-mt-1 gx-mb-1">{testMethod || ''}</span>
+          </FormItem>
+        </>
+      }
     </Form>
   )
 }
