@@ -192,7 +192,7 @@ contract PCRStorage is AccessControl {
 
         TestRequest[] memory _requests = new TestRequest[](testIdsPerIssuer[_who].length);
         for (uint i = 0; i < testIdsPerIssuer[_who].length; i++) {
-            _requests[i] = testRequests[i];
+            _requests[i] = testRequests[testIdsPerIssuer[_who][i]];
         }
         return (testIdsPerIssuer[_who], _requests);
     }
