@@ -172,14 +172,6 @@ const NewCertificate = (props) => {
   return (
     <Spin spinning={loader}>
       <Divider orientation="left">
-        <h3 className="gx-text-primary"><FormattedMessage id="information.user"/></h3>
-      </Divider>
-      <UserViewForm
-        intl={intl}
-        info={request}
-        showId={true}
-      />
-      <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.test"/></h3>
       </Divider>
       <Form
@@ -187,12 +179,6 @@ const NewCertificate = (props) => {
         layout={'vertical'}
         ref={formRef}
         onFinish={submit}>
-        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
-        </FormItem>
-        <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request['collectionDate'] || ''}</span>
-        </FormItem>
         <FormItem
           name="testResult"
           label={intl.formatMessage({id: 'test.result'})}
@@ -209,7 +195,21 @@ const NewCertificate = (props) => {
             }
           </Select>
         </FormItem>
+        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
+        </FormItem>
+        <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['collectionDate'] || ''}</span>
+        </FormItem>
       </Form>
+      <Divider orientation="left">
+        <h3 className="gx-text-primary"><FormattedMessage id="information.user"/></h3>
+      </Divider>
+      <UserViewForm
+        intl={intl}
+        info={request}
+        showId={true}
+      />
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.issuer"/></h3>
       </Divider>
