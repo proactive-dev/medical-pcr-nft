@@ -102,7 +102,7 @@ const NewCertificate = (props) => {
         window.history.back()
       } else {
         const _organization = {
-          role: result['role'],
+          // role: result['role'],
           name: ethers.utils.parseBytes32String(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
@@ -171,11 +171,11 @@ const NewCertificate = (props) => {
 
   return (
     <Spin spinning={loader}>
-      <Divider orientation="left">
-        <h3 className="gx-text-primary"><FormattedMessage id="information.test"/></h3>
+      <Divider orientation="left" dashed={true}>
+        <h3 className="gx-text-primary"><FormattedMessage id="test.result.select"/></h3>
       </Divider>
       <Form
-        name="test-form"
+        name="result-form"
         layout={'vertical'}
         ref={formRef}
         onFinish={submit}>
@@ -195,13 +195,10 @@ const NewCertificate = (props) => {
             }
           </Select>
         </FormItem>
-        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
-        </FormItem>
-        <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
-          <span className="ant-input gx-mt-1 gx-mb-1">{request['collectionDate'] || ''}</span>
-        </FormItem>
       </Form>
+      <Divider orientation="left" dashed={true}>
+        <h3 className="gx-text-primary"><FormattedMessage id="confirm.information"/></h3>
+      </Divider>
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.user"/></h3>
       </Divider>
@@ -210,6 +207,28 @@ const NewCertificate = (props) => {
         info={request}
         showId={true}
       />
+      <Divider orientation="left">
+        <h3 className="gx-text-primary"><FormattedMessage id="information.test"/></h3>
+      </Divider>
+      <Form
+        name="test-form"
+        layout={'vertical'}>
+        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
+        </FormItem>
+        <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{request['collectionDate'] || ''}</span>
+        </FormItem>
+        <FormItem name="sample" label={intl.formatMessage({id: 'collection.sample'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{organization['sample'] || ''}</span>
+        </FormItem>
+        <FormItem name="collectionMethod" label={intl.formatMessage({id: 'collection.method'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{organization['collectionMethod'] || ''}</span>
+        </FormItem>
+        <FormItem name="testMethod" label={intl.formatMessage({id: 'test.method'})}>
+          <span className="ant-input gx-mt-1 gx-mb-1">{organization['testMethod'] || ''}</span>
+        </FormItem>
+      </Form>
       <Divider orientation="left">
         <h3 className="gx-text-primary"><FormattedMessage id="information.issuer"/></h3>
       </Divider>
