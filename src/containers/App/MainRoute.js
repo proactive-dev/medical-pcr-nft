@@ -7,6 +7,8 @@ import {
   HOME,
   LIST,
   NEW,
+  ONCE,
+  REALTIME,
   REQUEST,
   SCAN,
   TYPE_ORGANIZATION,
@@ -23,6 +25,7 @@ import NewCertificate from '../../routes/main/NewCertificate'
 import CertificateList from '../../routes/main/CertificateList'
 import CertificateQRReader from '../../routes/main/CertificateQRReader'
 import Home from '../../routes/main/Home'
+import RealtimeCertificateQRReader from '../../routes/main/RealtimeCertificateQRReader'
 
 const MainRoute = (props) => {
   const {match} = props
@@ -39,8 +42,10 @@ const MainRoute = (props) => {
              component={CertificateList}/>
       <Route exact path={`${match.url}${CERTIFICATE}/${NEW}/:id`}
              component={NewCertificate}/>
-      <Route exact path={`${match.url}${CERTIFICATE}/${SCAN}`}
+      <Route exact path={`${match.url}${CERTIFICATE}/${SCAN}/${ONCE}`}
              component={CertificateQRReader}/>
+      <Route exact path={`${match.url}${CERTIFICATE}/${SCAN}/${REALTIME}`}
+             component={RealtimeCertificateQRReader}/>
       <Route exact path={`${match.url}${TYPE_ORGANIZATION}/${LIST}`}
              component={OrganizationList}/>
       <Route exact path={`${match.url}${VIEW}`}

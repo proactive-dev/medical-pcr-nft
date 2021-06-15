@@ -106,6 +106,7 @@
   "phoneNumber": "電話番号",
   "phoneNumber.example": "電話番号（例：09011112222）",
   "read.other": "他人の証明書を読み出す",
+  "read.realtime": "連続で読み取る",
   "register": "登録",
   "register.me": "自分の情報を登録",
   "register.user": "ユーザー登録",
