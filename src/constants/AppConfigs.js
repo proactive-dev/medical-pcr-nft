@@ -12,6 +12,7 @@ export const LANGUAGES = [
 // Notification constants
 export const SUCCESS = 'success'
 export const ERROR = 'error'
+export const INFO = 'info'
 export const NOTIFICATION_TIMEOUT = 5 // seconds
 export const QRREADER_TIMEOUT = 3000 // miliseconds
 
