@@ -20,6 +20,7 @@ import SourceHanSansJPMedium from '../../assets/fonts/SourceHanSansJP/SourceHanS
 import SourceHanSansJPNormal from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Normal.ttf'
 import SourceHanSansJPBold from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Bold.ttf'
 import SourceHanSansJPHeavy from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Heavy.ttf'
+import moment from 'moment'
 
 const FormItem = Form.Item
 const {Option} = Select
@@ -217,7 +218,12 @@ const NewCertificate = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
+          <DatePicker
+            className="gx-mt-1 gx-mb-1"
+            format={COMMON_DATE_FORMAT}
+            disabledDate={(current) => {
+              return moment() < current
+            }}/>
         </FormItem>
         <FormItem
           name="testMethod"
@@ -249,7 +255,12 @@ const NewCertificate = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
+          <DatePicker
+            className="gx-mt-1 gx-mb-1"
+            format={COMMON_DATE_FORMAT}
+            disabledDate={(current) => {
+              return moment() < current
+            }}/>
         </FormItem>
       </Form>
       <Divider orientation="left">
