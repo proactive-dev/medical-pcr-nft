@@ -21,6 +21,7 @@ import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { bigNumberArrayToString } from '../../util/helpers'
 import UserViewForm from '../../components/UserViewForm'
 import OrganizationViewForm from '../../components/OrganizationViewForm'
+import moment from 'moment'
 
 const FormItem = Form.Item
 
@@ -187,7 +188,12 @@ const RequestEdit = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
+          <DatePicker
+            className="gx-mt-1 gx-mb-1"
+            format={COMMON_DATE_FORMAT}
+            disabledDate={(current) => {
+              return moment() < current
+            }}/>
         </FormItem>
       </Form>
       <Button

@@ -144,7 +144,12 @@ const InfoEdit = (props) => {
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
-          <DatePicker className="gx-mt-1 gx-mb-1" format={COMMON_DATE_FORMAT}/>
+          <DatePicker
+            className="gx-mt-1 gx-mb-1"
+            format={COMMON_DATE_FORMAT}
+            disabledDate={(current) => {
+              return moment() < current
+            }}/>
         </FormItem>
         <FormItem
           name="gender"
