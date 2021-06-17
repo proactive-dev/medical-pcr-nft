@@ -61,7 +61,7 @@ const RequestList = (props) => {
             birthDate: ethers.utils.parseBytes32String(result[1][index]['user']['birth']),
             gender: parseInt(result[1][index]['user']['gender']),
             phoneNumber: ethers.utils.parseBytes32String(result[1][index]['user']['phone']),
-            email: ethers.utils.parseBytes32String(result[1][index]['user']['mail']),
+            email: bigNumberArrayToString(result[1][index]['user']['mail']),
             requestedAt: timestamp2Date(result[1][index]['requestedAt'].toNumber())
           })
         }
@@ -164,11 +164,11 @@ const RequestList = (props) => {
         return
       } else {
         organization = {
-          name: ethers.utils.parseBytes32String(result['name']),
+          name: bigNumberArrayToString(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: bigNumberArrayToString(result['mail'])
         }
         if (_.isEmpty(organization['name']) || _.isEmpty(organization['phoneNumber']) || _.isEmpty(organization['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.invalidIssuer'}))

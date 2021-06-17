@@ -59,11 +59,11 @@ const CertificateQRReader = (props) => {
         openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
       } else {
         const _info = {
-          name: ethers.utils.parseBytes32String(result['name']),
+          name: bigNumberArrayToString(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: bigNumberArrayToString(result['mail'])
         }
         if (_.isEmpty(_info['name'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))

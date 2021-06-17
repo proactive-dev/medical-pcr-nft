@@ -47,11 +47,11 @@ const OrganizationView = (props) => {
         const _info = {
           role: result['role'],
           account,
-          name: ethers.utils.parseBytes32String(result['name']),
+          name: bigNumberArrayToString(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: bigNumberArrayToString(result['mail'])
         }
         if (_.isEmpty(_info['name']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
