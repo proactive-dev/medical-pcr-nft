@@ -80,7 +80,7 @@ const RequestEdit = (props) => {
           birthDate: ethers.utils.parseBytes32String(result['birth']),
           gender: parseInt(result['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail'])
+          email: bigNumberArrayToString(result['mail'])
         }
         if (_.isEmpty(_info['firstName']) || _.isEmpty(_info['lastName']) || _.isEmpty(_info['phoneNumber']) || _.isEmpty(_info['email'])) {
           openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.emptyData'}))
@@ -104,11 +104,11 @@ const RequestEdit = (props) => {
         const _info = {
           role: result['role'],
           account,
-          name: ethers.utils.parseBytes32String(result['name']),
+          name: bigNumberArrayToString(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail']),
+          email: bigNumberArrayToString(result['mail']),
           sample: ethers.utils.parseBytes32String(result['sample']),
           collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
           testMethod: ethers.utils.parseBytes32String(result['testMethod'])

@@ -50,7 +50,7 @@ const InfoEdit = (props) => {
         values.gender,
         [...ethers.utils.toUtf8Bytes(values.residence)],
         ethers.utils.formatBytes32String(values.phoneNumber),
-        ethers.utils.formatBytes32String(values.email),
+        [...ethers.utils.toUtf8Bytes(values.email)],
         photoHash
       ).then((result) => {
         dispatch(hideLoader())
@@ -71,11 +71,11 @@ const InfoEdit = (props) => {
     contract.setOrganization(
       values.role,
       values.account,
-      ethers.utils.formatBytes32String(values.name),
+      [...ethers.utils.toUtf8Bytes(values.name)],
       ethers.utils.formatBytes32String(values.delegateName),
       [...ethers.utils.toUtf8Bytes(values.residence)],
       ethers.utils.formatBytes32String(values.phoneNumber),
-      ethers.utils.formatBytes32String(values.email),
+      [...ethers.utils.toUtf8Bytes(values.email)],
       ethers.utils.formatBytes32String(values.sample ? values.sample : ''),
       ethers.utils.formatBytes32String(values.collectionMethod ? values.collectionMethod : ''),
       ethers.utils.formatBytes32String(values.testMethod ? values.testMethod : '')

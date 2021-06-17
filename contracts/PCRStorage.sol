@@ -16,17 +16,17 @@ struct Person {
     Gender gender;
     uint[] residence;
     bytes32 phone;
-    bytes32 mail;
+    uint[] mail;
     string photo;
 }
 
 struct Organization {
     OrganizationRole role;
-    bytes32 name;
+    uint[] name;
     bytes32 representative;
     uint[] streetAddress;
     bytes32 phone;
-    bytes32 mail;
+    uint[] mail;
     bytes32 sample;
     bytes32 collectionMethod;
     bytes32 testMethod;
@@ -68,8 +68,8 @@ contract PCRStorage is AccessControl {
     uint256[] certificateIds;
     mapping (address => uint256[]) certificateIdsPerIssuer;
 
-    event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, uint[] residence, bytes32 phone, bytes32 mail, string photo);
-    event SetOrganization(OrganizationRole role, address who, bytes32 name, bytes32 representative, uint[] streetAddress, bytes32 phone, bytes32 mail, bytes32 sample, bytes32 collectionMethod, bytes32 testMethod);
+    event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, uint[] residence, bytes32 phone, uint[] mail, string photo);
+    event SetOrganization(OrganizationRole role, address who, uint[] name, bytes32 representative, uint[] streetAddress, bytes32 phone, uint[] mail, bytes32 sample, bytes32 collectionMethod, bytes32 testMethod);
     event NewTestRequest(uint256 id, address user, address issuer, bytes32 sampleId, bytes32 collectionDate, uint256 requestedAt);
 
     constructor() {
@@ -91,7 +91,7 @@ contract PCRStorage is AccessControl {
     }
 
     function isOrganization(address _who) public view returns (bool) {
-        return organizations[_who].name != "";
+        return organizations[_who].name.length != 0;
     }
 
     function isIssuer(address _who) public view returns (bool) {
@@ -126,7 +126,7 @@ contract PCRStorage is AccessControl {
         return (isAdmin(_who), isIssuer(_who), isBusinessRole(_who));
     }
 
-    function setPerson(address _who, bytes32 _firstName, bytes32 _lastName, bytes32 _birth, Gender _gender, uint[] memory _residence, bytes32 _phone, bytes32 _mail, string memory _photo) external onlyAdmin {
+    function setPerson(address _who, bytes32 _firstName, bytes32 _lastName, bytes32 _birth, Gender _gender, uint[] memory _residence, bytes32 _phone, uint[] memory _mail, string memory _photo) external onlyAdmin {
         people[_who].firstName = _firstName;
         people[_who].lastName = _lastName;
         people[_who].birth = _birth;
@@ -145,8 +145,8 @@ contract PCRStorage is AccessControl {
         return people[_who];
     }
 
-    function setOrganization(OrganizationRole _role, address _who, bytes32 _name, bytes32 _representative, uint[] memory _streetAddress, bytes32 _phone, bytes32 _mail, bytes32 _sample, bytes32 _collectionMethod, bytes32 _testMethod) external onlyAdmin {
-        if (organizations[_who].name == "" ) {
+    function setOrganization(OrganizationRole _role, address _who, uint[] memory _name, bytes32 _representative, uint[] memory _streetAddress, bytes32 _phone, uint[] memory _mail, bytes32 _sample, bytes32 _collectionMethod, bytes32 _testMethod) external onlyAdmin {
+        if (organizations[_who].name.length == 0 ) {
             organizationAccounts.push(_who);
         }
 

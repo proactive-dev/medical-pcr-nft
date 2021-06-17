@@ -75,7 +75,7 @@ const NewCertificate = (props) => {
           birthDate: ethers.utils.parseBytes32String(result['user']['birth']),
           gender: parseInt(result['user']['gender']),
           phoneNumber: ethers.utils.parseBytes32String(result['user']['phone']),
-          email: ethers.utils.parseBytes32String(result['user']['mail']),
+          email: bigNumberArrayToString(result['user']['mail']),
           sampleId: ethers.utils.parseBytes32String(result['sampleId']),
           collectionDate: ethers.utils.parseBytes32String(result['collectionDate'])
         }
@@ -103,11 +103,11 @@ const NewCertificate = (props) => {
       } else {
         const _organization = {
           // role: result['role'],
-          name: ethers.utils.parseBytes32String(result['name']),
+          name: bigNumberArrayToString(result['name']),
           delegateName: ethers.utils.parseBytes32String(result['representative']),
           residence: bigNumberArrayToString(result['streetAddress']),
           phoneNumber: ethers.utils.parseBytes32String(result['phone']),
-          email: ethers.utils.parseBytes32String(result['mail']),
+          email: bigNumberArrayToString(result['mail']),
           sample: ethers.utils.parseBytes32String(result['sample']),
           collectionMethod: ethers.utils.parseBytes32String(result['collectionMethod']),
           testMethod: ethers.utils.parseBytes32String(result['testMethod'])

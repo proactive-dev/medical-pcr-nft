@@ -30,10 +30,10 @@ const OrganizationList = (props) => {
         _organizations.push({
           role: result[1][index]['role'],
           account: account,
-          name: ethers.utils.parseBytes32String(result[1][index]['name']),
+          name: bigNumberArrayToString(result[1][index]['name']),
           streetAddress: bigNumberArrayToString(result[1][index]['streetAddress']),
           phone: ethers.utils.parseBytes32String(result[1][index]['phone']),
-          mail: ethers.utils.parseBytes32String(result[1][index]['mail']),
+          mail: bigNumberArrayToString(result[1][index]['mail']),
           representative: ethers.utils.parseBytes32String(result[1][index]['representative'])
         })
       })

@@ -37,7 +37,7 @@ const RequestList = (props) => {
             birthDate: ethers.utils.parseBytes32String(result[1][index]['user']['birth']),
             gender: parseInt(result[1][index]['user']['gender']),
             phoneNumber: ethers.utils.parseBytes32String(result[1][index]['user']['phone']),
-            email: ethers.utils.parseBytes32String(result[1][index]['user']['mail']),
+            email: bigNumberArrayToString(result[1][index]['user']['mail']),
             requestedAt: timestamp2Date(result[1][index]['requestedAt'].toNumber())
           })
         }
