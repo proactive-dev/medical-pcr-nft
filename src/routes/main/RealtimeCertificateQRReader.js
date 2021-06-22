@@ -5,23 +5,39 @@ import { Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import _ from 'lodash'
 import moment from 'moment'
+import AWS from 'aws-sdk'
+import { jsonToCSV } from 'react-papaparse'
 import { openNotificationWithIcon } from '../../components/Messages'
-import { COMMON_DATE_FORMAT, ERROR, QRREADER_TIMEOUT } from '../../constants/AppConfigs'
+import {
+  AWS_ACCESS,
+  AWS_BUCKET,
+  AWS_REGION,
+  AWS_SECRET,
+  COMMON_DATE_FORMAT,
+  ERROR,
+  QRREADER_TIMEOUT
+} from '../../constants/AppConfigs'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import QrReader from 'react-qr-reader'
 import { decrypt } from '../../util/crypto'
 import { ethers } from 'ethers'
 import { timestamp2Date } from '../../util/helpers'
 
+const s3 = new AWS.S3({
+  region: AWS_REGION,
+  accessKeyId: AWS_ACCESS,
+  secretAccessKey: AWS_SECRET
+})
+
 const RealtimeCertificateQRReader = (props) => {
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {contract} = chain
+  const {address, contract} = chain
   const {intl} = props
   const [certificate, setCertificate] = useState({})
 
-  const fetchCertificate = (id) => {
+  const fetchCertificate = async (id) => {
     dispatch(showLoader())
     contract.getCertificate(id).then((result) => {
       dispatch(hideLoader())
@@ -34,6 +50,7 @@ const RealtimeCertificateQRReader = (props) => {
           issuedAt: timestamp2Date(result['issuedAt'].toNumber()),
           expireAt: timestamp2Date(result['expireAt'].toNumber())
         }
+        uploadCSV(result['request']['userAccount'])
         setCertificate(_cert)
         setTimeout(() => {
           setCertificate({})
@@ -43,6 +60,35 @@ const RealtimeCertificateQRReader = (props) => {
       dispatch(hideLoader())
       openNotificationWithIcon(ERROR, error.message)
     })
+  }
+
+  const uploadCSV = async (account) => {
+    dispatch(showLoader())
+    const csv = [
+      {
+        timestamp: 'タイムスタンプ',
+        reader: '読取者ID',
+        account: 'QR提示者ID'
+      },
+      {
+        timestamp: new Date().getTime(),
+        reader: address,
+        account: account
+      }]
+    const params = {
+      Bucket: AWS_BUCKET,
+      Key: `pcrpass-${new Date().getTime()}.csv`,
+      ACL: 'public-read',
+      Body: jsonToCSV(csv, {header: false}),
+      ContentType: 'text/csv'
+    }
+    try {
+      await s3.upload(params).promise()
+      dispatch(hideLoader())
+    } catch (e) {
+      dispatch(hideLoader())
+      console.log('Upload CSV Error:', e)
+    }
   }
 
   const handleQrCodeScan = (value) => {

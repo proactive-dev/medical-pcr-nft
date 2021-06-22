@@ -25,6 +25,10 @@ export const RPC_PROVIDER = process.env.NODE_ENV === 'production' ? process.env.
 export const CONTRACT_OWNER_KEY = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PRIV_KEY_PROD : process.env.REACT_APP_PRIV_KEY_LOCAL
 export const CONTRACT_STORAGE_ADDRESS = process.env.REACT_APP_STORAGE_ADDRESS
 export const CONTRACT_CERT_ADDRESS = process.env.REACT_APP_CERTIFICATE_ADDRESS
+export const AWS_BUCKET = process.env.REACT_APP_AWS_BUCKET
+export const AWS_ACCESS = process.env.REACT_APP_AWS_ACCESS
+export const AWS_SECRET = process.env.REACT_APP_AWS_SECRET
+export const AWS_REGION = process.env.REACT_APP_AWS_REGION
 
 export const HOME = 'home'
 export const NEW = 'new'
