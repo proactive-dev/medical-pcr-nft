@@ -282,7 +282,8 @@ const RequestList = (props) => {
               className="gx-link gx-text-underline gx-pointer gx-m-2 gx-p-0"
               data={jsonToCSV([csvHeader(), ...requests], {header: false})}
               filename={`${Date.now()}`}
-              type={'link'}>
+              type={'link'}
+              bom={true}>
               <FormattedMessage id={'csv.download'}/>
             </CSVDownloader>
           </Col>
