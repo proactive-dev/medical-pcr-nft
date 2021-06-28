@@ -122,11 +122,6 @@ const NewCertificate = (props) => {
   }
 
   const submit = async (values) => {
-    if (values.testResult !== 0) { // Negative Result only
-      openNotificationWithIcon(ERROR, intl.formatMessage({id: 'alert.positiveResult'}))
-      return
-    }
-
     // Export to PDF
     const file = await pdf(
       <CertificatePDF

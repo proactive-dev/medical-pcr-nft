@@ -130,9 +130,7 @@ const RequestList = (props) => {
         continue // Skip empty or invalid row
       }
       const testResult = ((testResultStr === '陰性') || (testResultStr.toLocaleUpperCase() === 'NEGATIVE') || (Number(testResultStr) === 0)) ? 0 : 1
-      if (testResult !== 0) { // Negative Result only
-        continue
-      }
+
       const request = _.find(requests, {'id': Number(reqId), 'account': account, 'email': email})
       if (_.isEmpty(request) || _.isUndefined(request)) {
         continue // Skip rows that has invalid request data

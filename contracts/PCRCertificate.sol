@@ -24,7 +24,6 @@ contract PCRCertificate is ERC721PresetMinterPauserAutoId {
 
     function mintCertificate(uint256 _testId, bytes32 _sampleId, bytes32 _sample, bytes32 _collectionMethod, bytes32 _collectionDate, bytes32 _testMethod, TestResult _result, bytes32 _resultDate, string memory _fileHash) external {
         require(st.isAdmin(msg.sender) || st.isIssuer(msg.sender), "Only admin or issuer can call this function");
-        require(_result == TestResult.Negative, "Test result should be negative for a new certificate");
 
         TestRequest memory _request = st.getTestRequest(_testId);
         address _who = _request.userAccount;
