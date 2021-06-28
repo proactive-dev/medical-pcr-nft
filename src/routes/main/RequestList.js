@@ -10,7 +10,7 @@ import { CSVDownloader, CSVReader, jsonToCSV } from 'react-papaparse'
 import { Font, pdf } from '@react-pdf/renderer'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
 import { openNotificationWithIcon } from '../../components/Messages'
-import { CERTIFICATE, COMMON_DATE_FORMAT, ERROR, INFO, NEW, SUCCESS } from '../../constants/AppConfigs'
+import { CERTIFICATE, COMMON_DATE_FORMAT, ERROR, INFO, NEW, NOTIFY_LINK, SUCCESS } from '../../constants/AppConfigs'
 import { bigNumberArrayToString, timestamp2Date, uploadIPFS } from '../../util/helpers'
 import CertificatePDF from '../../components/CertificatePDF'
 import SourceHanSansJPExtraLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-ExtraLight.ttf'
@@ -216,6 +216,13 @@ const RequestList = (props) => {
           ethers.utils.formatBytes32String(test.testResultDate.format(COMMON_DATE_FORMAT)),
           fileHash
         )
+        notify({
+          to: request.email,
+          firstName: request.firstName,
+          lastName: request.lastName,
+          resultDate: test.testResultDate.format(COMMON_DATE_FORMAT),
+          issuer: organization.name
+        })
         count++
         openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.mint'}))
       } catch (error) {
@@ -228,6 +235,16 @@ const RequestList = (props) => {
     }))
     dispatch(hideLoader())
     fetchData()
+  }
+
+  const notify = async (values) => {
+    dispatch(showLoader())
+    await fetch(NOTIFY_LINK, {
+      method: 'POST',
+      body: JSON.stringify(values)
+    })
+
+    dispatch(hideLoader())
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
