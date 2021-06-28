@@ -74,6 +74,7 @@ const CertificateList = (props) => {
         result[0].forEach((id, index) => {
           _certificates.push({
             id: id.toNumber(),
+            result: result[1][index]['result'],
             firstName: ethers.utils.parseBytes32String(result[1][index]['request']['user']['firstName']),
             lastName: ethers.utils.parseBytes32String(result[1][index]['request']['user']['lastName']),
             photo: result[1][index]['request']['user']['photo'],
@@ -105,7 +106,7 @@ const CertificateList = (props) => {
               description={`${intl.formatMessage({id: 'expire.date'})} ${item.expireAt}`}
             />
             {
-              isUser &&
+              isUser && (item.result === 0) &&
               <Button className="gx-link gx-text-underline gx-mb-0" type="link" onClick={() => setSelected(item)}>
                 <FormattedMessage id="show.qrcode"/>
               </Button>
