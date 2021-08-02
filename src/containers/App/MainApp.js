@@ -28,15 +28,10 @@ const {Content, Footer} = Layout
 
 const providerOptions = {
   torus: {
-    package: Torus, // required
+    package: Torus,
     options: {
       networkParams: {
-        host: RPC_PROVIDER // optional
-        // chainId: 1337, // optional
-        // networkId: 1337 // optional
-      },
-      config: {
-        buildEnv: 'development' // optional
+        host: RPC_PROVIDER
       }
     }
   }
@@ -48,10 +43,8 @@ const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'})
 let web3Modal
 if (typeof window !== 'undefined') {
   web3Modal = new Web3Modal({
-    // network: 'mainnet', // optional
-    // disableInjectedProvider: true,
     cacheProvider: true,
-    providerOptions // required
+    providerOptions
   })
 }
 
