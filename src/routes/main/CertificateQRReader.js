@@ -169,7 +169,7 @@ const CertificateQRReader = (props) => {
             labelStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
             contentStyle={{backgroundColor: 'transparent', borderColor: 'transparent'}}
             size={'middle'}>
-            <Descriptions.Item label={intl.formatMessage({id: 'collection.sampleId'})}>{sampleId}</Descriptions.Item>
+            <Descriptions.Item label={intl.formatMessage({id: 'collection.kitId'})}>{sampleId}</Descriptions.Item>
             <Descriptions.Item label={intl.formatMessage({id: 'test.result'})}>
               {_.isUndefined(result) ? '' : intl.formatMessage({id: `test.result.${findResult(result)}`})}
             </Descriptions.Item>

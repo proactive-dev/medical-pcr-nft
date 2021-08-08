@@ -57,6 +57,7 @@ const RequestEdit = (props) => {
     contract.newTestRequest(
       ...reqParams,
       ethers.utils.formatBytes32String(values.sampleId),
+      kitImgHash,
       ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT))
     ).then((result) => {
       dispatch(hideLoader())
@@ -203,7 +204,7 @@ const RequestEdit = (props) => {
         ref={formRef}>
         <FormItem
           name="sampleId"
-          label={intl.formatMessage({id: 'collection.sampleId'})}
+          label={intl.formatMessage({id: 'collection.kitId'})}
           rules={[
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>

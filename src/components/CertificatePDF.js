@@ -133,7 +133,7 @@ const CertificatePDF = (props) => {
         <View style={styles.testInfoContainer}>
           <Text style={styles.subTitle}>検査情報</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>検体ナンバー</Text>
+            <Text style={styles.label}>キットナンバー</Text>
             <Text style={styles.value}>{request.sampleId}</Text>
           </View>
           <View style={styles.infoRow}>
@@ -145,7 +145,7 @@ const CertificatePDF = (props) => {
             <Text style={styles.value}>{issuer.collectionMethod}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>検体採取日時</Text>
+            <Text style={styles.label}>検査日時</Text>
             <Text style={styles.value}>{request.collectionDate}</Text>
           </View>
           <View style={styles.infoRow}>

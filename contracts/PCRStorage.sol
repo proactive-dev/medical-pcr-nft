@@ -38,6 +38,7 @@ struct TestRequest {
     address issuerAccount;
     Organization issuer;
     bytes32 sampleId;
+    string kitImgHash;
     bytes32 collectionDate;
     uint256 requestedAt;
     uint256 issuedAt;
@@ -70,7 +71,7 @@ contract PCRStorage is AccessControl {
 
     event SetPerson(address who, bytes32 firstName, bytes32 lastName, bytes32 birth, Gender gender, uint[] residence, bytes32 phone, uint[] mail, string photo);
     event SetOrganization(OrganizationRole role, address who, uint[] name, bytes32 representative, uint[] streetAddress, bytes32 phone, uint[] mail, bytes32 sample, bytes32 collectionMethod, bytes32 testMethod);
-    event NewTestRequest(uint256 id, address user, address issuer, bytes32 sampleId, bytes32 collectionDate, uint256 requestedAt);
+    event NewTestRequest(uint256 id, address user, address issuer, bytes32 sampleId, string kitImgHash, bytes32 collectionDate, uint256 requestedAt);
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -226,7 +227,7 @@ contract PCRStorage is AccessControl {
         return (_ids, _certificates);
     }
 
-    function newTestRequest(address _user, address _issuer, bytes32 _sampleId, bytes32 _collectionDate) external {
+    function newTestRequest(address _user, address _issuer, bytes32 _sampleId, string memory _kitImgHash, bytes32 _collectionDate) external {
         require(!isBusinessRole(_issuer), "Account with business role can not call this function");
         uint256 _id = _testIdTracker.current();
 
@@ -235,13 +236,14 @@ contract PCRStorage is AccessControl {
         testRequests[_id].issuerAccount = _issuer;
         testRequests[_id].issuer = organizations[_issuer];
         testRequests[_id].sampleId = _sampleId;
+        testRequests[_id].kitImgHash = _kitImgHash;
         testRequests[_id].collectionDate = _collectionDate;
         testRequests[_id].requestedAt = block.timestamp;
         testRequests[_id].issuedAt = 0;
         testIdsPerIssuer[_issuer].push(_id);
 
         _testIdTracker.increment();
-        emit NewTestRequest(_id, _user, _issuer, _sampleId, _collectionDate, block.timestamp);
+        emit NewTestRequest(_id, _user, _issuer, _sampleId, _kitImgHash, _collectionDate, block.timestamp);
     }
 
     function setCertificate(uint256 _testId, Certificate memory _certificate) public onlyAdmin {

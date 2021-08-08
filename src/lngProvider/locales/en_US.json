@@ -40,6 +40,7 @@
   "collection.method": "Collection Method",
   "collection.sample": "Sample",
   "collection.sampleId": "Sample Number",
+  "collection.kitId": "Kit Number",
   "confirm": "Confirm",
   "confirm.information": "Confirmation",
   "confirm.load.description": "Saved account has been found.\n Do you want to load it?",

@@ -213,7 +213,7 @@ const NewCertificate = (props) => {
       <Form
         name="test-form"
         layout={'vertical'}>
-        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.sampleId'})}>
+        <FormItem name="sampleId" label={intl.formatMessage({id: 'collection.kitId'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{request['sampleId'] || ''}</span>
         </FormItem>
         <FormItem name="collectionDate" label={intl.formatMessage({id: 'collection.date'})}>
