@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, DatePicker, Form, Input, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
+import Webcam from 'react-webcam'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import { isAddress } from '@ethersproject/address'
@@ -18,7 +19,7 @@ import {
 } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { bigNumberArrayToString } from '../../util/helpers'
+import { bigNumberArrayToString, uploadDataURIToIPFS } from '../../util/helpers'
 import UserViewForm from '../../components/UserViewForm'
 import OrganizationViewForm from '../../components/OrganizationViewForm'
 import moment from 'moment'
@@ -28,12 +29,14 @@ const FormItem = Form.Item
 const formRef = React.createRef()
 
 const RequestEdit = (props) => {
+  const webcamRef = useRef(null)
   const dispatch = useDispatch()
   const loader = useSelector(state => state.progress.loader)
   const chain = useSelector(state => state.chain)
-  const {address, contract} = chain
+  const {address, contract, ipfs} = chain
   const {intl, history, match} = props
   const [qrCodeModalOpen, setQRCodeModalOpen] = useState(false)
+  const [webcamModalOpen, setWebcamModalOpen] = useState(false)
   const [qrValue, setQrValue] = useState(null)
   const [user, setUser] = useState({})
   const [issuer, setIssuer] = useState({})
@@ -48,7 +51,7 @@ const RequestEdit = (props) => {
     }
   }, [])
 
-  const saveTestRequest = async (values) => {
+  const saveTestRequest = async ({values, kitImgHash}) => {
     const reqParams = match.params.type === TYPE_USER ? [address, qrValue] : [qrValue, address]
     dispatch(showLoader())
     contract.newTestRequest(
@@ -133,6 +136,31 @@ const RequestEdit = (props) => {
     setQRCodeModalOpen(false)
   }
 
+  const showWebcamModal = () => {
+    formRef.current.validateFields().then((values) => {
+      setWebcamModalOpen(true)
+    }).catch((errors) => {
+      console.log('Form errors', errors)
+    })
+  }
+
+  const closeWebcamModal = e => {
+    setWebcamModalOpen(false)
+  }
+
+  const getScreenshotAndRequest = async () => {
+    formRef.current.validateFields().then(async (values) => {
+      const imageSrc = webcamRef.current.getScreenshot()
+      const kitImgHash = await uploadDataURIToIPFS({ipfs, uri: imageSrc})
+
+      await saveTestRequest({values, kitImgHash})
+      setWebcamModalOpen(false)
+    }).catch((errors) => {
+      setWebcamModalOpen(false)
+      console.log('Form errors', errors)
+    })
+  }
+
   const handleQrCodeScan = (value) => {
     setQRCodeModalOpen(false)
     if (isAddress(value)) {
@@ -172,8 +200,7 @@ const RequestEdit = (props) => {
       <Form
         name="request-form"
         layout={'vertical'}
-        ref={formRef}
-        onFinish={saveTestRequest}>
+        ref={formRef}>
         <FormItem
           name="sampleId"
           label={intl.formatMessage({id: 'collection.sampleId'})}
@@ -200,7 +227,7 @@ const RequestEdit = (props) => {
         className="gx-mt-4 login-form-button"
         type="primary"
         disabled={_.isEmpty(qrValue)}
-        onClick={() => formRef.current.submit()}>
+        onClick={showWebcamModal}>
         <FormattedMessage id="request"/>
       </Button>
       {
@@ -216,6 +243,22 @@ const RequestEdit = (props) => {
               delay={QRREADER_TIMEOUT}
               onScan={handleQrCodeScan}
               onError={handleQrCodeError}
+            />
+          </div>
+        </Modal>
+      }
+      {
+        webcamModalOpen &&
+        <Modal
+          visible={true}
+          onOk={getScreenshotAndRequest}
+          onCancel={closeWebcamModal}>
+          <div className={'gx-text-center'}>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              width={250}
             />
           </div>
         </Modal>

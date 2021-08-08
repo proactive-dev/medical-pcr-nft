@@ -111,6 +111,17 @@ export const uploadIPFS = async ({ipfs, file}) => {
   }
 }
 
+export const uploadDataURIToIPFS = async ({ipfs, uri}) => {
+  try {
+    const data = uri.split(',')[1];
+    const result = await ipfs.add(Buffer.from(data, 'base64'))
+    return result && result.path
+  } catch (err) {
+    console.error('Error pinning base 64 encoded string to IPFS', err)
+    return null
+  }
+}
+
 export const readFileAsync = (file) => {
   return new Promise((resolve, reject) => {
     let reader = new FileReader()
