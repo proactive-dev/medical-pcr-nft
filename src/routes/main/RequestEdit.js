@@ -260,6 +260,7 @@ const RequestEdit = (props) => {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               width={250}
+              videoConstraints={{facingMode: 'environment'}}
             />
           </div>
         </Modal>
