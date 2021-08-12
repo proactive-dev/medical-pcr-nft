@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Divider, Form, Select, Spin } from 'antd'
+import { Divider, Form, Image, Select, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
@@ -12,7 +12,7 @@ import ConfirmButton from '../../components/ConfirmButton'
 import UserViewForm from '../../components/UserViewForm'
 import OrganizationViewForm from '../../components/OrganizationViewForm'
 import { hideLoader, showLoader } from '../../appRedux/actions/Progress'
-import { bigNumberArrayToString, uploadIPFS } from '../../util/helpers'
+import { bigNumberArrayToString, ipfsLink, uploadIPFS } from '../../util/helpers'
 import CertificatePDF from '../../components/CertificatePDF'
 import SourceHanSansJPExtraLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-ExtraLight.ttf'
 import SourceHanSansJPLight from '../../assets/fonts/SourceHanSansJP/SourceHanSansJP-Light.ttf'
@@ -77,6 +77,7 @@ const NewCertificate = (props) => {
           phoneNumber: ethers.utils.parseBytes32String(result['user']['phone']),
           email: bigNumberArrayToString(result['user']['mail']),
           sampleId: ethers.utils.parseBytes32String(result['sampleId']),
+          kitImgHash: result['kitImgHash'],
           collectionDate: ethers.utils.parseBytes32String(result['collectionDate'])
         }
         if (_.isEmpty(_request['firstName']) || _.isEmpty(_request['lastName']) || _.isEmpty(_request['phoneNumber']) || _.isEmpty(_request['email'])) {
@@ -227,6 +228,13 @@ const NewCertificate = (props) => {
         </FormItem>
         <FormItem name="testMethod" label={intl.formatMessage({id: 'test.method'})}>
           <span className="ant-input gx-mt-1 gx-mb-1">{organization['testMethod'] || ''}</span>
+        </FormItem>
+        <FormItem name="testMethod" label={intl.formatMessage({id: 'test.kit.img'})}>
+          {
+            request['kitImgHash'] &&
+            <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(request['kitImgHash'])}
+                   alt={intl.formatMessage({id: 'test.kit.img'})}/>
+          }
         </FormItem>
       </Form>
       <Divider orientation="left">
