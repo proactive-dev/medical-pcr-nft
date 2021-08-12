@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Button, DatePicker, Form, Input, Modal, Spin } from 'antd'
+import { Button, Form, Input, Modal, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import Webcam from 'react-webcam'
 import { ethers } from 'ethers'
@@ -58,7 +58,7 @@ const RequestEdit = (props) => {
       ...reqParams,
       ethers.utils.formatBytes32String(values.sampleId),
       kitImgHash,
-      ethers.utils.formatBytes32String(values.collectionDate.format(COMMON_DATE_FORMAT))
+      ethers.utils.formatBytes32String(moment.utc().format(COMMON_DATE_FORMAT))
     ).then((result) => {
       dispatch(hideLoader())
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.request'}))
@@ -209,19 +209,6 @@ const RequestEdit = (props) => {
             {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
           ]}>
           <Input className="gx-mt-1 gx-mb-1" allowClear/>
-        </FormItem>
-        <FormItem
-          name="collectionDate"
-          label={intl.formatMessage({id: 'collection.date'})}
-          rules={[
-            {required: true, message: intl.formatMessage({id: 'alert.fieldRequired'})}
-          ]}>
-          <DatePicker
-            className="gx-mt-1 gx-mb-1"
-            format={COMMON_DATE_FORMAT}
-            disabledDate={(current) => {
-              return moment() < current
-            }}/>
         </FormItem>
       </Form>
       <Button
