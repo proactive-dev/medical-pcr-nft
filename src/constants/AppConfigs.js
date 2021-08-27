@@ -25,6 +25,8 @@ export const CONTRACT_OWNER_KEY = process.env.NODE_ENV === 'production' ? proces
 export const CONTRACT_STORAGE_ADDRESS = process.env.REACT_APP_STORAGE_ADDRESS
 export const CONTRACT_CERT_ADDRESS = process.env.REACT_APP_CERTIFICATE_ADDRESS
 
+export const NOTIFY_LINK = process.env.REACT_APP_NOTIFY_LINK
+
 export const HOME = 'home'
 export const NEW = 'new'
 export const EDIT = 'edit'

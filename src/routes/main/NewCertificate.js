@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { ethers } from 'ethers'
 import _ from 'lodash'
 import { Font, pdf } from '@react-pdf/renderer'
-import { ERROR, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
+import { ERROR, NOTIFY_LINK, SUCCESS, TEST_RESULT } from '../../constants/AppConfigs'
 import { openNotificationWithIcon } from '../../components/Messages'
 import ConfirmButton from '../../components/ConfirmButton'
 import UserViewForm from '../../components/UserViewForm'
@@ -162,12 +162,28 @@ const NewCertificate = (props) => {
       fileHash
     ).then((result) => {
       dispatch(hideLoader())
+      notify({
+        to: request.email,
+        firstName: request.firstName,
+        lastName: request.lastName,
+        kitId: request.sampleId
+      })
       openNotificationWithIcon(SUCCESS, intl.formatMessage({id: 'alert.success.mint'}))
       history.push('/')
     }).catch((error) => {
       dispatch(hideLoader())
       openNotificationWithIcon(ERROR, error.message)
     })
+  }
+
+  const notify = async (values) => {
+    dispatch(showLoader())
+    await fetch(NOTIFY_LINK, {
+      method: 'POST',
+      body: JSON.stringify(values)
+    })
+
+    dispatch(hideLoader())
   }
 
   return (
