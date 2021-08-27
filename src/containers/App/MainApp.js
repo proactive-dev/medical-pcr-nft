@@ -7,6 +7,7 @@ import Web3Modal from 'web3modal'
 import Torus from '@toruslabs/torus-embed'
 import _ from 'lodash'
 import {
+  CHAIN_ID,
   CONTRACT_CERT_ADDRESS,
   CONTRACT_OWNER_KEY,
   CONTRACT_STORAGE_ADDRESS,
@@ -31,7 +32,9 @@ const providerOptions = {
     package: Torus,
     options: {
       networkParams: {
-        host: RPC_PROVIDER
+        host: RPC_PROVIDER,
+        chainId: CHAIN_ID,
+        networkId: CHAIN_ID
       }
     }
   }
