@@ -129,7 +129,7 @@ const CertificateList = (props) => {
           <br/>
           <div className={'gx-text-center gx-mt-4'}>
             <h3 className={'gx-font-weight-bold gx-text-primary'}>{`${selected.lastName} ${selected.firstName}`}</h3>
-            <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(selected.photo)} alt={intl.formatMessage({id: 'image'})}/>
+            <Image className="gx-mt-1 gx-mb-1" src={ipfsLink(selected.photo)} alt={intl.formatMessage({id: 'photo'})}/>
             <br/>
             <QRCode
               value={buildQR(selected)}

@@ -186,7 +186,7 @@ const InfoEdit = (props) => {
         </FormItem>
         <FormItem
           name="images"
-          label={intl.formatMessage({id: 'image'})}
+          label={intl.formatMessage({id: 'photo'})}
           valuePropName="fileList"
           getValueFromEvent={normalizeFile}
           rules={[

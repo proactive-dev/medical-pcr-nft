@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   title: {
-    color: '#61dafb',
+    color: '#91be26',
     letterSpacing: 2,
     fontWeight: 'bold',
     fontSize: 25,
@@ -89,7 +89,7 @@ const CertificatePDF = (props) => {
       <Page size="A4" style={styles.page}>
         <Image style={styles.logo} src={logo}/>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{'PCR検査証明'}</Text>
+          <Text style={styles.title}>{'抗原検査証明'}</Text>
         </View>
         <View style={styles.issuedInfoRow}>
           <Text style={styles.label}>交付年月日</Text>
@@ -163,7 +163,7 @@ const CertificatePDF = (props) => {
         </View>
         <View style={styles.issuerInfoContainer}>
           <View style={styles.infoRow}>
-            <Text style={styles.labelLg}>検査機関名</Text>
+            <Text style={styles.labelLg}>確認機関名</Text>
             <Text style={styles.value}>{issuer.name}</Text>
           </View>
           <View style={styles.infoRow}>
