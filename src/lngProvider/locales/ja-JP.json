@@ -21,7 +21,7 @@
   "alert.qrCodeError": "QRコードスキャンエラー",
   "alert.success.user": "ユーザーの保存に成功しました。",
   "alert.success.organization": "機関の保存に成功しました。",
-  "alert.success.request": "PCRテストの申請に成功しました。",
+  "alert.success.request": "抗原検査キットの申請を完了しました。",
   "alert.success.burn": "NFT Burnに成功しました。",
   "alert.success.mint": "NFT発行に成功しました。",
   "amount": "金額",
