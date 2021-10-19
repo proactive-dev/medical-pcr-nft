@@ -70,12 +70,8 @@ const RealtimeCertificateQRReader = (props) => {
   const getExpireStatus = (_date) => {
     const timeDiff = moment.duration(moment().diff(moment(_date, COMMON_DATE_FORMAT))).asHours()
     switch (true) {
-      case (timeDiff <= 72):
+      case (timeDiff <= 48):
         return 'info'
-      case (timeDiff <= 96):
-        return 'success'
-      case (timeDiff <= 120):
-        return 'warning'
       default:
         return 'error'
     }
